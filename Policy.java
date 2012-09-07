@@ -11,7 +11,7 @@
 public interface Policy
 {
     // Be sure we can set the date on polcies.
-    void setDate( int year, int month, int day );
+    void setDate( String dateToParse );
 
     // Returns the value of the insurance premium.
     double premium();

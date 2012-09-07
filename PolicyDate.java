@@ -4,12 +4,13 @@
 // PURPOSE:   This class handles the date handling for the insurance
 //            policies for the OOPD assignment. It will allow parsing
 //            and outputting of dates in the format expected.
-// REFERENCE: Uses both the Java Calendar and DateFormat classes.
-// COMMENTS:  None.
+// REFERENCE: Uses both the Java DateFormat class.
+// COMMENTS:  Dates should be immutable, the 20th of August 1922 can't
+//            become 16th July 2011.
 // REQUIRES:  None.
 // Last Mod:  6th September 2012
 
-import java.util.Calendar;
+import java.util.Date;
 import java.text.SimpleDateFormat;
 
 public class PolicyDate {
@@ -17,35 +18,15 @@ public class PolicyDate {
     private static SimpleDateFormat dateFormatter =
         new SimpleDateFormat( "yyyyMMdd" );
 
-    // Our calendar object to hold the policy date.
-    private Calendar date = new Calendar();
+    // The date of the policy, this should always be initalised by a
+    // constructor and never be changed once it has been set.
+    private Date dateOfPolicy;
 
     // Constructors
-    public PolicyDate()
+    public PolicyDate( String dateToParse )
     {
-        // We should make sure that dates are correct.
-        date.setLenient( false );
-    }
-
-    public PolicyDate( int year, int month, int day )
-    {
-        date.setLenient( false );
-        date.set( year, month, day);
-    }
-
-    // Mutators
-    public void setDate( int year, int month, int day )
-    {
-        // Just pass through the values for the Calendar class to
-        // handle.  We should be sure to catch exceptions if the date is
-        // wrong.
-        date.set( year, month, day );
-    }
-
-    // Given a string in the format YYYYMMDD, parses and sets the date.
-    public static Calendar parse( String toParse )
-    {
-        return dateFormatter.parse( toParse );
+        dateFormatter.setLenient( false );
+        dateOfPolicy = dateFormatter.parse( dateToParse );
     }
 
     // Assessors

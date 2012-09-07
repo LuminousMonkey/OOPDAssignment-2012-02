@@ -15,44 +15,48 @@ public class HomePolicy implements Policy
                                                             6112 };
 
     // Variables
+    private PolicyDate date = null;
     private int postCode = null;
     private int numberOfStories = null;
 
     // Setters
-    void setPostCode( int newPostCode )
+    public void setDate( int dateToParse )
+    {
+        date = new PolicyDate( dateToParse.toString() );
+    }
+
+    public void setPostCode( int newPostCode )
     {
         postCode = newPostCode;
     }
 
-    void setPostCode( String newPostCode )
-    {
-        postCode = Integer.parseInt( newPostCode );
-    }
-
-    void setNumberOfStories( int newNumberOfStories )
+    public void setNumberOfStories( int newNumberOfStories )
     {
         numberOfStories = newNumberOfStories;
     }
 
     // Assessors
-    int getPostCode()
+    public int getPostCode()
     {
         return postCode;
     }
 
-    int getNumberOfStories()
+    public int getNumberOfStories()
     {
         return numberOfStories;
     }
 
-    String toString()
+    public String toString()
     {
-
+        return Utility.interposeFields( {date.toString(),
+                    postCode.toString(),
+                    numberOfStories.toString() } ) + "\n";
     }
 
     // Returns the calculation of the home insurance premium based on
     // postcode
     double premium()
     {
+
     }
 }
