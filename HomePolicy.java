@@ -1,7 +1,16 @@
+// FILE:      HomePolicy.java
+// AUTHOR:    Mike Aldred
+// UNIT:      ST151
+// PURPOSE:   Home policies, keeps details of the home insurance policy
+//            and will do premium calculation based on postcode.
+// REFERENCE: None.
+// COMMENTS:  None.
+// REQUIRES:  None.
+// Last Mod:  9th September 2012
+
 public class HomePolicy implements Policy
 {
     // Constants
-
     // Base premium for all polcies.
     private static final double BASE_PREMIUM = 500.00;
 

@@ -6,16 +6,21 @@
 // REFERENCE: None.
 // COMMENTS:  None.
 // REQUIRES:  None.
-// Last Mod:  6th September 2012
+// Last Mod:  9th September 2012
 
 public interface Policy
 {
-    // Be sure we can set the date on polcies.
+    // All policies must have a date, hence the policy interface must
+    // have a way of having a date set.
     void setDate( String dateToParse );
 
-    // Returns the value of the insurance premium.
+    // All insurance policies must have a premium that must be
+    // calculated, the premium calculation may depend on details in the
+    // poilcy, so if this method is called before policy information is
+    // set, it must return a null value.
     double premium();
 
-    // Returns the policy as a single string.
+    // Returns the policy as a single line, as expected in the file
+    // format.
     String toString();
 }
