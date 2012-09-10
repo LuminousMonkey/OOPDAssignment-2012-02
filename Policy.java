@@ -18,7 +18,7 @@ public interface Policy
     // calculated, the premium calculation may depend on details in the
     // poilcy, so if this method is called before policy information is
     // set, it must return a null value.
-    double premium();
+    double calculatePremium();
 
     // Returns the policy as a single line, as expected in the file
     // format.
