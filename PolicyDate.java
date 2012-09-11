@@ -48,8 +48,9 @@ public class PolicyDate {
                     dateIsNull = false;
                 } catch (ParseException e)
                     {
-                        // Incorrect date entered, we need to catch this and
-                        // prompt the user to enter the date again.
+                        // Incorrect date entered, just set the date to
+                        // null.
+                        dateOfPolicy = null;
                     }
             }
     }

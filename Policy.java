@@ -8,7 +8,7 @@
 // REQUIRES:  None.
 // Last Mod:  9th September 2012
 
-public interface Policy
+public abstract class Policy
 {
     // All policies must have a date, hence the policy interface must
     // have a way of having a date set.
@@ -22,5 +22,19 @@ public interface Policy
 
     // Returns the policy as a single line, as expected in the file
     // format.
-    String toString();
+    public String toString()
+    {
+        String[] policyFields = this.stringFields();
+
+        if ( date.isNullDate() )
+            {
+                // Can't use the syntax sugar of "array = {};" here, so
+                // we create an array of length 1, and just put the date
+                // in it.
+                policyfields = new String[1];
+                policyfields[0] = date.toString();
+            }
+
+        return Utility.interposeFields( policyFields ) + "\n";
+    };
 }
