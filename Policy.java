@@ -49,30 +49,25 @@ public abstract class Policy
     // format.
     public String toString()
     {
-        // To try and make outputting a little more consistent, there is
-        // actually an "interpostFields" function that will take an
-        // array, and insert the field delimiter character between each
-        // string given in that array, with a delimiter at the end.
-        //
-        // Unfortunately, doing it this way, means we have to massage
-        // the array we pass to it. And also because Java only supports
-        // defining an array with {} on initialisation we have the code
-        // below.
-
-        // What fields and their order have to be defined by the class,
-        // to query this, call the policyFields method, it should return
-        // an array of strings.
+        // This one method covers outputting the policy fields to the
+        // line format expected in the text file, interposeFields takes
+        // an array of strings and returns a string with the delimiter
+        // between each of the string values, and terminated by a
+        // delimiter.
         String[] stringFields = this.policyFields();
 
+        // If the date is null, then we don't have any fields except the
+        // null date.
         if ( date.isNullDate() )
             {
-                // Can't use the syntax sugar of "array = {};" here, so
-                // we create an array of length 1, and just put the date
-                // in it.
+                // Can't use the syntax sugar of "array = {};" here
+                // because that only works with initialisation of
+                // variables, so we create an array of length 1, and
+                // just put the date in it.
                 stringFields = new String[1];
                 stringFields[0] = date.toString();
             }
 
-        return Utility.interposeFields( stringFields ) + "\n";
+        return Utility.interposeFields( stringFields );
     };
 }

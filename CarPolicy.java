@@ -53,6 +53,8 @@ public class CarPolicy extends Policy
         manufactureYear = year;
     }
 
+    // Returns a string array of the fields and their order in the text
+    // file.
     protected String[] policyFields()
     {
         String[] resultArray = { dateString(),
