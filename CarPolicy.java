@@ -5,15 +5,24 @@
 //            cars.
 // REFERENCE: None.
 // COMMENTS:  None.
-// REQUIRES:  None.
+// REQUIRES:  java.util.Calendar for getting the current year.
 // Last Mod:  11th September 2012
 
-public class CarPolicy implements {
+import java.util.Calendar;
+
+public class CarPolicy extends Policy
+{
     // Constants Value that represents an invalid year for date of
     // manufacture.
     private static final int INVALID_YEAR = -1;
 
-    private PolicyDate date = null;
+    // Base premium for calculation.
+    private static final double BASE_PREMIUM = 1500.00;
+
+    // Aging factor, this is a factor that is multiplied by the age of
+    // the car as part of the premium calculations.
+    private static final double AGING_FACTOR = 0.2;
+
     private String carMake = "";
     private String carModel = "";
     private int manufactureYear = INVALID_YEAR;
@@ -22,23 +31,13 @@ public class CarPolicy implements {
     public CarPolicy( int date, String make, String model, int year )
     {
         // Assume the fields are correct for now.
-        this.setDate( date );
-        this.setMake( make );
-        this.setModel( model );
-        this.setYear( year );
+        setDate( date );
+        setMake( make );
+        setModel( model );
+        setYear( year );
     }
 
     // Setters
-    public void setDate( String dateToParse )
-    {
-        date = new PolicyDate( dateToParse );
-    }
-
-    public void setDate( int dateToParse )
-    {
-        date = new PolicyDate( Integer.toString( dateToParse ) );
-    }
-
     public void setMake( String make )
     {
         carMake = make;
@@ -49,20 +48,27 @@ public class CarPolicy implements {
         carModel = model;
     }
 
-    // Returns a string that represents the line that should be written
-    // out to the file, single line as per the assignment spec.
-    public String toString()
+    public void setYear( int year )
     {
-        String[] stringFields = { date.toString(),
-                                  carMake,
-                                  carModel };
+        manufactureYear = year;
+    }
 
-        if ( date.isNullDate() )
-            {
-                stringFields = new String[1];
-                stringFields[0] = date.toString();
-            }
+    protected String[] policyFields()
+    {
+        String[] resultArray = { dateString(),
+                                 carMake,
+                                 carModel,
+                                 Integer.toString( manufactureYear ) };
 
-        return Utility.interposeFields( stringFields ) + "\n";
+        return resultArray;
+    }
+
+    // Returns the premium of the car insurance following the formula
+    // outlined in the assignment.
+    public double calculatePremium()
+    {
+        int carAge = Calendar.getInstance().get( Calendar.YEAR ) -
+            manufactureYear;
+        return BASE_PREMIUM / ( 1 + AGING_FACTOR * carAge );
     }
 }
