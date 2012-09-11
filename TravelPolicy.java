@@ -62,6 +62,9 @@ public class TravelPolicy extends Policy
         return result;
     }
 
+    // Returns a string array that represents the order that the policy
+    // fields should be ordered in the text file.
+    // Check the comment in the Policy class.
     protected String[] policyFields()
     {
         String[] resultArray = { dateString(),
