@@ -1,7 +1,7 @@
 // FILE:      PolicyHolder.java
 // AUTHOR:    Mike Aldred
 // UNIT:      ST151
-// PURPOSE:  Handles all the details for the policy holder.
+// PURPOSE:   Handles all the details for the policy holder.
 // REFERENCE: None.
 // COMMENTS:  None.
 // REQUIRES:  None.
@@ -15,12 +15,12 @@ public class PolicyHolder
     public String phoneNumber = "";
 
     // Default constructor
-    public PolicyHolder( String nameToUse, String addressToUse,
-                         String phoneNumberToUse )
+    public PolicyHolder( String inName, String inAddress,
+                         String inPhoneNumber )
     {
-        name = nameToUse;
-        address = addressToUse;
-        phoneNumber = phoneNumberToUse;
+        name = inName;
+        address = inAddress;
+        phoneNumber = inPhoneNumber;
     }
 
     // Accessors
