@@ -9,17 +9,9 @@
 // Last Mod:  13th September 2012
 
 import io.ConsoleInput;
-import TextFile;
 
 class PolicyManager
 {
-    // These are constants that relate to the modes available in the
-    // TextFile class. Please note that these depend on that class and
-    // may change if that class changes.
-    private static final String READ_MODE = "r";
-    private static final String WRITE_MODE = "w";
-    private static final String APPEND_MODE = "a";
-
     public static void main( String[] args )
     {
         // Prompt for filename
@@ -56,24 +48,5 @@ class PolicyManager
         // Output prompt to user.
         return ConsoleInput.readLine(
             "Please enter the filename of the policy file" );
-    }
-
-    // Tests that a file exists already, returns true if the file is
-    // available for reading (writing may not work), otherwise false.
-    private static boolean fileExists( String filename )
-    {
-        TextFile fileTest = new TextFile( filename, READ_MODE );
-
-        result = false;
-        if ( fileTest.openFile() )
-            {
-                result = true;
-            }
-
-        // TextFile class is nice, and will make sure we can't close a
-        // file we haven't opened already.
-        fileTest.closeFile();
-
-        return result;
     }
 }

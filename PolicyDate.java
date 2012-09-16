@@ -76,4 +76,44 @@ public class PolicyDate {
 
         return result;
     }
+
+    // The equals method for comparing two dates,
+    @Override public boolean equals( Object inObj )
+    {
+        boolean result = true;
+
+        if ( !(inObj instanceof PolicyDate) )
+            {
+                result = false;
+            }
+        else
+            {
+                PolicyDate testObject = (PolicyDate) inObj;
+                result = testObject.dateOfPolicy.equals( dateOfPolicy ) &&
+                    testObject.dateIsNull == dateIsNull;
+            }
+
+        return result;
+    }
+
+    // If you override equals, you also have to override hashCode, it's
+    // part of the general contract with Java objects.
+    //
+    // Good hashing is the realm of maths.
+    @Override public int hashCode()
+    {
+        // Don't need any sophisticated hash function here.
+        int result = 17;
+
+        // We don't care about a loss of precision, we just want a
+        // simple hashing function.
+        result = 31 * result + (int) dateOfPolicy.getTime();
+
+        if ( !dateIsNull )
+            {
+                result = 31 * result + 1;
+            }
+
+        return result;
+    }
 }
