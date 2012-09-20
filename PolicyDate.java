@@ -55,11 +55,23 @@ public class PolicyDate {
             }
     }
 
+    // Copy constructor
+    public PolicyDate( PolicyDate inDate )
+    {
+        dateOfPolicy = new Date( inDate.dateOfPolicy );
+        dateIsNull = inDate.dateIsNull;
+    }
+
     // Returns true if the date is a null date, which is a valid value
     // that represents that there is no date.
     public boolean isNullDate()
     {
         return ( dateIsNull );
+    }
+
+    public Date getDate()
+    {
+        return dateOfPolicy;
     }
 
     // Assessors

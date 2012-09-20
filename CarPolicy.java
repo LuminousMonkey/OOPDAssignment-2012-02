@@ -27,7 +27,15 @@ public class CarPolicy extends Policy
     private String carModel = "";
     private int manufactureYear = INVALID_YEAR;
 
-    // Constructor
+    // Default constructor
+    public CarPolicy()
+    {
+        setDate( PolicyDate.NULL_DATE );
+        // Default values for other fields should be already set in
+        // initialisation.
+    }
+
+    // Alternate Constructor
     public CarPolicy( int date, String make, String model, int year )
     {
         // Assume the fields are correct for now.

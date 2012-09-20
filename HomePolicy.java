@@ -32,13 +32,28 @@ public class HomePolicy extends Policy
     private int postCode = INVALID_POSTCODE;
     private int numberOfStories = INVALID_NUMBER_OF_STORIES;
 
-    // Constructor
+    // Default constructor
+    public HomePolicy()
+    {
+        setDate( PolicyDate.NULL_DATE );
+        // Number of stores and postcode should already be invalid.
+    }
+
+    // Alternate Constructor
     public HomePolicy( int date, int stories, int postCode )
     {
         // Assume the fields are correct for now.
         setDate( date );
         setNumberOfStories( stories );
         setPostCode( postCode );
+    }
+
+    // Copy constructor
+    public HomePolicy( HomePolicy inHomePolicy )
+    {
+        setDate( inHomePolicy.getDate() );
+        setNumberOfStories( inHomePolicy.numberOfStories );
+        setPostCode( inHomePolicy.postCode );
     }
 
     // Setters

@@ -191,6 +191,17 @@ public class PolicyFile
         return result;
     }
 
+    // Policy holder entry This returns the string of how the given
+    // entry will be saved into the file, we put it here because the
+    // file format is part of how policy files are managed.
+    public static String policyHolderEntry( PolicyHolder inPolicyHolder )
+    {
+        return inPolicyHolder.toString() + "\n" +
+            inPolicyHolder.getHomeInsurance() + "\n" +
+            inPolicyHolder.getCarInsurance() + "\n" +
+            inPolicyHolder.getTravelInsurance() + "\n";
+    }
+
     // Return a human readable error string.
     private String errorMessage()
     {

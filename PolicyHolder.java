@@ -15,9 +15,14 @@ public class PolicyHolder
     private static final int HASH_MULTIPLIER = 31;
 
     // Variables
-    public String name = "";
-    public String address = "";
-    public String phoneNumber = "";
+    private String name = "";
+    private String address = "";
+    private String phoneNumber = "";
+
+    // Insurance policies for the policy holder.
+    private HomePolicy homeInsurance = new HomePolicy();
+    private CarPolicy carInsurance = new CarPolicy();
+    private TravelPolicy travelInsurance = new TravelPolicy();
 
     // Default constructor
     public PolicyHolder( String inName, String inAddress,
@@ -42,6 +47,27 @@ public class PolicyHolder
     public String getPhoneNumber()
     {
         return phoneNumber;
+    }
+
+    public HomePolicy getHomeInsurance()
+    {
+        return homeInsurance;
+    }
+
+    public CarPolicy getCarInsurance()
+    {
+        return carInsurance;
+    }
+
+    public TravelPolicy getTravelInsurance()
+    {
+        return travelInsurance;
+    }
+
+    // setPolicy
+    public void setPolicy( HomePolicy inHomePolicy )
+    {
+        homeInsurance = new HomePolicy( inHomePolicy );
     }
 
     public String toString()

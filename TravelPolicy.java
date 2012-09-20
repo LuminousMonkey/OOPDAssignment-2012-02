@@ -24,7 +24,15 @@ public class TravelPolicy extends Policy
     // Country that is covered under this policy.
     private String policyCountry = "";
 
-    // Constructor
+    // Default constructor
+    public TravelPolicy()
+    {
+        setDate( PolicyDate.NULL_DATE );
+        // Remaining fields should already be set in fields.
+
+    }
+
+    // Alternate Constructor
     public TravelPolicy( int date, String policyCountry )
     {
         setDate( date );
