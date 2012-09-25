@@ -70,6 +70,7 @@ public class HomePolicy extends Policy
     {
         // The format of the string should match the format of our
         // toString function.
+
         // Break down the string into substrings based on the field seperator.
         String[] fields = Utility.fieldStrings( inFileLine );
 
