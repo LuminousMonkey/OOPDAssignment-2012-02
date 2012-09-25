@@ -23,9 +23,19 @@ public class CarPolicy extends Policy
     // the car as part of the premium calculations.
     private static final double AGING_FACTOR = 0.2;
 
+    // Fields
     private String carMake = "";
     private String carModel = "";
     private int manufactureYear = INVALID_YEAR;
+
+    // Position of the fields in the policy file.
+    private static final int DATE_FIELD = 0;
+    private static final int MAKE_FIELD = 1;
+    private static final int MODEL_FIELD = 2;
+    private static final int YEAR_FIELD = 3;
+
+    // This should be updated if the number of fields above change.
+    private static final int NUM_OF_FIELDS = 3;
 
     // Default constructor
     public CarPolicy()
@@ -43,6 +53,32 @@ public class CarPolicy extends Policy
         setMake( make );
         setModel( model );
         setYear( year );
+    }
+
+    // Takes a single line from the policy file as a string and returns
+    // a matching home policy file.
+    public CarPolicy( String inFileLine )
+    {
+        // The format of the string should match the format of our
+        // toString function.
+
+        // Break down the string into substrings based on the field seperator.
+        String[] fields = Utility.fieldStrings( inFileLine );
+
+        // Fields are all hardcoded.  Date field should always be
+        // present, however if it's the only field, then don't bother
+        // setting any of the other field values, rely on the default
+        // values being set correctly.
+        setDate( fields[DATE_FIELD] );
+
+        // Check that we have the number of fields we're expecting, if
+        // we get more, then it's not so bad, we'll just ignore them.
+        if ( fields.length >= NUM_OF_FIELDS )
+            {
+                setMake( fields[MAKE_FIELD] );
+                setModel( fields[MODEL_FIELD] );
+                setYear( Integer.parseInt( fields[YEAR_FIELD] ) );
+            }
     }
 
     // Setters

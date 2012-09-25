@@ -58,7 +58,7 @@ public class PolicyDate {
     // Copy constructor
     public PolicyDate( PolicyDate inDate )
     {
-        dateOfPolicy = new Date( inDate.dateOfPolicy );
+        dateOfPolicy = (Date) inDate.dateOfPolicy.clone();
         dateIsNull = inDate.dateIsNull;
     }
 

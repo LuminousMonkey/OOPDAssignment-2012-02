@@ -22,4 +22,11 @@ public class Utility
 
         return result;
     }
+
+    // Given a string, return an array of strings broken down by the
+    // delimiter.
+    public static String[] fieldStrings( String fieldLine )
+    {
+        return fieldLine.split( FIELD_DELIMITER );
+    }
 }

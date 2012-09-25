@@ -25,6 +25,12 @@ public class PolicyHolder
     private TravelPolicy travelInsurance = new TravelPolicy();
 
     // Default constructor
+    public PolicyHolder()
+    {
+
+    }
+
+    // Alternate constructor
     public PolicyHolder( String inName, String inAddress,
                          String inPhoneNumber )
     {

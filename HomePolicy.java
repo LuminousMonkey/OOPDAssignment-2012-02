@@ -28,6 +28,14 @@ public class HomePolicy extends Policy
     private static final int INVALID_POSTCODE = -1;
     private static final int INVALID_NUMBER_OF_STORIES = -1;
 
+    // Position of the fields in the policy file.
+    private static final int DATE_FIELD  = 0;
+    private static final int POSTCODE_FIELD = 1;
+    private static final int STORIES_FIELD = 2;
+
+    // This should be updated if the number of fields above change.
+    private static final int NUM_OF_FIELDS = 3;
+
     // Variables
     private int postCode = INVALID_POSTCODE;
     private int numberOfStories = INVALID_NUMBER_OF_STORIES;
@@ -40,20 +48,44 @@ public class HomePolicy extends Policy
     }
 
     // Alternate Constructor
-    public HomePolicy( int date, int stories, int postCode )
+    public HomePolicy( int date, int postCode, int stories )
     {
         // Assume the fields are correct for now.
         setDate( date );
-        setNumberOfStories( stories );
         setPostCode( postCode );
+        setNumberOfStories( stories );
     }
 
     // Copy constructor
     public HomePolicy( HomePolicy inHomePolicy )
     {
-        setDate( inHomePolicy.getDate() );
-        setNumberOfStories( inHomePolicy.numberOfStories );
+        setDate( inHomePolicy.dateString() );
         setPostCode( inHomePolicy.postCode );
+        setNumberOfStories( inHomePolicy.numberOfStories );
+    }
+
+    // Takes in a single line from the policy file as a string and
+    // returns a matching home policy file.
+    public HomePolicy( String inFileLine )
+    {
+        // The format of the string should match the format of our
+        // toString function.
+        // Break down the string into substrings based on the field seperator.
+        String[] fields = Utility.fieldStrings( inFileLine );
+
+        // Fields are all hardcoded.  Date field should always be
+        // present, however if it's the only field, then don't bother
+        // setting any of the other field values, rely on the default
+        // values being set correctly.
+        setDate( fields[DATE_FIELD] );
+
+        // Check that we have the number of fields we're expecting, if
+        // we get more, then it's not so bad, we'll just ignore them.
+        if ( fields.length >= NUM_OF_FIELDS )
+            {
+                setPostCode( Integer.parseInt( fields[POSTCODE_FIELD] ) );
+                setNumberOfStories( Integer.parseInt( fields[STORIES_FIELD] ) );
+            }
     }
 
     // Setters
@@ -112,8 +144,8 @@ public class HomePolicy extends Policy
     protected String[] policyFields()
     {
         String[] resultArray = { dateString(),
-                                 Integer.toString( numberOfStories ),
-                                 Integer.toString( postCode ) };
+                                 Integer.toString( postCode ),
+                                 Integer.toString( numberOfStories )};
 
         return resultArray;
     }

@@ -93,6 +93,14 @@ public class PolicyFile
         return result;
     }
 
+    // Opens the file for reading, expecting to use readLine to try and
+    // read the file.
+    public boolean readFile()
+    {
+        fileOfPolicies = new TextFile( filename, READ_MODE );
+        return fileOfPolicies.openFile();
+    }
+
     // Read line
     //
     // As TextFile doesn't offer a read line method, so we need our own.
@@ -112,7 +120,7 @@ public class PolicyFile
 
         // Loop until we find a newline character, or we hit the end of
         // the file.
-        while ( !fileOfPolicies.readStatus() && !newLineFound )
+        while ( fileOfPolicies.readStatus() && !newLineFound )
             {
                 currentCharacter = fileOfPolicies.readChar();
                 if ( currentCharacter == '\n' )

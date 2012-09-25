@@ -21,6 +21,13 @@ public class TravelPolicy extends Policy
     private static final String[] HIGHER_PREMIUM_COUNTRIES = {
         "United States", "Russia" };
 
+    // Position of the fields in the policy file.
+    private static final int DATE_FIELD = 0;
+    private static final int COUNTRY_FIELD = 1;
+
+    // This should be update if the number of fields above change.
+    private static final int NUM_OF_FIELDS = 2;
+
     // Country that is covered under this policy.
     private String policyCountry = "";
 
@@ -37,6 +44,20 @@ public class TravelPolicy extends Policy
     {
         setDate( date );
         setCountry( policyCountry );
+    }
+
+    // Takes a single line from the policy file as a string and returns
+    // a matching home policy file.
+    public TravelPolicy( String inFileLine )
+    {
+        String[] fields = Utility.fieldStrings( inFileLine );
+
+        setDate( fields[DATE_FIELD] );
+
+        if ( fields.length >= NUM_OF_FIELDS )
+            {
+                setCountry( fields[COUNTRY_FIELD] );
+            }
     }
 
     // Setters
