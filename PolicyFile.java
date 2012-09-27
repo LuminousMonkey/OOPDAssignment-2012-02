@@ -42,9 +42,17 @@ public class PolicyFile
 
     }
 
+    public enum WriteMode
+    {
+        UNKNOWN,                // File only for reading.
+        WRITE_NEW,              // Create a new file.
+        APPEND                  // Append any new records.
+    }
+
     // Name of the policy file that we want to read/write/append to.
     private String filename = "";
     private FileError fileError = FileError.NO_ERROR;
+    private WriteMode writeMode = WriteMode.UNKNOWN;
 
     TextFile fileOfPolicies = null;
 
@@ -68,6 +76,13 @@ public class PolicyFile
                 // The file may exist, but we just can't read it, with
                 // the TextFile class, there's no real way of knowing.
                 fileError = FileError.READ;
+                writeMode = WriteMode.WRITE_NEW;
+            }
+        else
+            {
+                // If the file exists, then if we ever write to it,
+                // we're appending.
+                writeMode = WriteMode.APPEND;
             }
     }
 
@@ -120,7 +135,7 @@ public class PolicyFile
 
         // Loop until we find a newline character, or we hit the end of
         // the file.
-        while ( fileOfPolicies.readStatus() && !newLineFound )
+        while ( fileOfPolicies.endOfFile() && !newLineFound )
             {
                 currentCharacter = fileOfPolicies.readChar();
                 if ( currentCharacter == '\n' )
@@ -193,8 +208,12 @@ public class PolicyFile
                 // We have managed to open the file in a writeable mode.
                 // Check that the policy holder we've got isn't already
                 // in the file.
-
+                fileToWriteTo.printIt( policyHolderEntry( inHolder ) );
             }
+
+        // We don't need to worry about checking if the file was open or
+        // not, as that is taken care of in the TextFile class.
+        fileToWriteTo.closeFile();
 
         return result;
     }
