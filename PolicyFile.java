@@ -165,6 +165,7 @@ public class PolicyFile
         // we've been given, a match means that the policy holder exists
         // in the file.
         fileOfPolicies = new TextFile( filename, READ_MODE );
+        PolicyHolder currentFilePolicyHolder = new PolicyHolder();
 
         boolean matchFound = false;
         if ( fileOfPolicies.openFile() )
@@ -173,8 +174,12 @@ public class PolicyFile
                 // entries looking for a match.
                 while ( !fileOfPolicies.endOfFile() && !matchFound )
                     {
-                        // Just test the looping for now.
-                        System.out.println( readLine() );
+                        // Read in the line as a Policy holder Will just
+                        // be an invalid, "blank" Policy Holder if the
+                        // line isn't in the correct format.
+                        currentFilePolicyHolder = new PolicyHolder( readLine() );
+
+                        matchFound = inHolder.equals( currentFilePolicyHolder );
                     }
             }
 

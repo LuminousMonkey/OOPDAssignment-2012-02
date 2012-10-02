@@ -14,6 +14,13 @@ public class PolicyHolder
     private static final int HASH_SEED = 15;
     private static final int HASH_MULTIPLIER = 31;
 
+    // Our fields for our policy holder is split differenty. The name
+    // string is terminated by ",".
+    // The phone number will start with "(".
+    // These are regular expressions!
+    private static final String nameTerminator = ",";
+    private static final String phoneNumberRegEx = "\\(|\\)";
+
     // Variables
     private String name = "";
     private String address = "";
@@ -37,6 +44,33 @@ public class PolicyHolder
         name = inName;
         address = inAddress;
         phoneNumber = inPhoneNumber;
+    }
+
+    // Alternate constructor If we've given a single string, then we
+    // expect it to be the same as the output string of our toString method.
+    public PolicyHolder( String inHolder )
+    {
+        // We have our PolicyHolder string, the first "," represents the
+        // name of the Policy Holder, with the rest of the string (which
+        // may contain more "," characters that are unrelated to the
+        // holder's name) being the address and phone number.
+
+        // We then parse the remainer of text as address, and find the phone number.
+        String nameAndRemainer[] = inHolder.split( nameTerminator, 2);
+
+        if ( nameAndRemainer.length > 1 )
+            {
+                // First in the array will be our name, the second in the array
+                // will be the address and phone number, so get the phone number,
+                String addressAndPhoneNumber[] = nameAndRemainer[1].split( phoneNumberRegEx );
+
+                if ( addressAndPhoneNumber.length > 1 )
+                    {
+                        name = nameAndRemainer[0];
+                        address = addressAndPhoneNumber[0];
+                        phoneNumber = addressAndPhoneNumber[1];
+                    }
+            }
     }
 
     // Accessors
