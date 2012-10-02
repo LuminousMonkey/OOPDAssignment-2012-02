@@ -54,7 +54,7 @@ public class PolicyFile
     private FileError fileError = FileError.NO_ERROR;
     private WriteMode writeMode = WriteMode.UNKNOWN;
 
-    TextFile fileOfPolicies = null;
+    private TextFile fileOfPolicies = null;
 
     // Constructor
     //
@@ -135,7 +135,7 @@ public class PolicyFile
 
         // Loop until we find a newline character, or we hit the end of
         // the file.
-        while ( fileOfPolicies.endOfFile() && !newLineFound )
+        while ( !fileOfPolicies.endOfFile() && !newLineFound )
             {
                 currentCharacter = fileOfPolicies.readChar();
                 if ( currentCharacter == '\n' )
@@ -164,7 +164,7 @@ public class PolicyFile
         // loop through each entry, comparing with the policy holder
         // we've been given, a match means that the policy holder exists
         // in the file.
-        TextFile fileOfPolicies = new TextFile( filename, READ_MODE );
+        fileOfPolicies = new TextFile( filename, READ_MODE );
 
         boolean matchFound = false;
         if ( fileOfPolicies.openFile() )
