@@ -26,9 +26,15 @@ class PolicyManager
         // available for empty files.
 
         // Generate the menu
+        //
+        // The menu will show slightly different text if adding a new
+        // policy holder will create the file instead of appending to an
+        // existing file.
         displayMenu( createPolicyFile );
-        // If the user wants to create a new, then run add user method.
 
+        char selectedOption = menuSelection();
+
+        processMenuOption( menuSelection() );
         // If the user wants to view a policy (if the file isn't empty)
         // Then view policy holder method.
     }
@@ -41,15 +47,42 @@ class PolicyManager
     }
 
     // Prints out the menu to the user.
-    private static void displayMenu( boolean createPolicyFile )
+    private static void displayMenu( boolean willCreateFile )
     {
         System.out.println( "OOPD Assignment Menu" );
+
+        displayAddNewPolicyOption( willCreateFile );
+        displayViewPolicyOption( willCreateFile );
+
+        System.out.println( "(Q)uit" );
+    }
+
+    // Our add new policy holder menu option varies if the policy file
+    // the user specified exists or not.
+    private static void displayAddNewPolicyOption( boolean willCreateFile )
+    {
+        // We just append a string to the menu option to let the user
+        // know what will be happening.
+        String newOrExistingFileMessage = " to existing file.";
+
+        if ( willCreateFile )
+            {
+                newOrExistingFileMessage = " and create file.";
+            }
         System.out.println( "(A)dd a new policy holder" );
-        if ( !createPolicyFile )
+    }
+
+    private static void displayViewPolicyOption( boolean willCreateFile )
+    {
+        // Can't view a policy holder if the file doesn't exist.
+        if ( !willCreateFile )
             {
                 System.out.println( "(V)iew a policyholder's policies" );
             }
-        System.out.println( "(Q)uit" );
+        else
+            {
+                System.out.println( "No policy file available for reading." );
+            }
     }
 
     // Menu prompt
@@ -68,8 +101,8 @@ class PolicyManager
     }
 
     // This is what does the actual work in what we do next.  The
-    // character that's passed in is expected to be either 'a', 'v', or
-    // 'q'.
+    // character that's passed in is expected to be either 'a' or 'v'
+    // 'q' should be caught before we get to this proceedure.
     // Anything else will pass through like yesterday's sour milk.
     private static void processMenuOption( char optionSelected )
     {
@@ -79,10 +112,7 @@ class PolicyManager
                 addNewPolicyHolder();
                 break;
             case 'v':
-                viewPolicyHolder();
-                break;
-            case 'q':
-                System.out.println( "Thanks! Cheerio!" );
+               viewPolicyHolder();
                 break;
             }
     }
