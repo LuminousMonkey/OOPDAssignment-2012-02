@@ -17,26 +17,16 @@ class PolicyManager
         // Prompt for filename
         String policyFilename = promptForFilename();
 
-        boolean policyFileReadable = false;
-        boolean createPolicyFile = false;
+        // If the policy file can't be read, then we will try to create
+        // it, and give an error if they try to read it.
+        boolean createPolicyFile = fileExists( policyFilename );
 
-        // Test that file exists
-        if ( fileExists ( policyFilename ) )
-            {
-                System.out.println( "Found " + policyFilename );
-                policyFileReadable = true;
-            }
-        else
-            {
-                createPolicyFile = promptYes( "Unable to read " + policyFilename +
-                                              " create file instead?" );
-            }
         // File doesn't exist, inform the user that the file will be
         // created if they add a new policy. View should not be
         // available for empty files.
 
         // Generate the menu
-        displayMenu( );
+        displayMenu( createPolicyFile );
         // If the user wants to create a new, then run add user method.
 
         // If the user wants to view a policy (if the file isn't empty)
@@ -51,11 +41,14 @@ class PolicyManager
     }
 
     // Prints out the menu to the user.
-    private static void displayMenu()
+    private static void displayMenu( boolean createPolicyFile )
     {
         System.out.println( "OOPD Assignment Menu" );
         System.out.println( "(A)dd a new policy holder" );
-        System.out.println( "(V)iew a policyholder's policies" );
+        if ( !createPolicyFile )
+            {
+                System.out.println( "(V)iew a policyholder's policies" );
+            }
         System.out.println( "(Q)uit" );
     }
 
@@ -90,7 +83,6 @@ class PolicyManager
                 break;
             case 'q':
                 System.out.println( "Thanks! Cheerio!" );
-                System.exit( 0 );
                 break;
             }
     }
@@ -119,6 +111,8 @@ class PolicyManager
         String name = ConsoleInput.readLine( "Name" );
         String address = ConsoleInput.readLine( "Address" );
 
-        // Search for the policy holder, if
+        // Search for the policy holder, if we find the policy holder,
+        // then show the holder to the user.
+        PolicyFile insurances = PolicyFile( "test.txt" );
     }
 }
