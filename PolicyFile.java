@@ -152,13 +152,14 @@ public class PolicyFile
         return result;
     }
 
-    // Given a policy holder, check that the same policy holder doesn't
-    // already exist in the file.
-    //
+    // Given a policy holder, this will search for a policy holder that
+    // equals the policy holder passed in, if there's a match then it
+    // will return the policy holder that was found in the file.
+
     // This method already assumes that the file has already been tested
     // if it exists, or can be read, any failure should result in false
     // being returned.
-    public boolean existsIn( PolicyHolder inHolder )
+    public PolicyHolder find( PolicyHolder inHolder )
     {
         // To check if a policy holder exists in a file, we open it, and
         // loop through each entry, comparing with the policy holder
@@ -170,27 +171,50 @@ public class PolicyFile
         boolean matchFound = false;
         if ( fileOfPolicies.openFile() )
             {
-                // We're successful, so lets start looping through the
-                // entries looking for a match.
+                // We can read the file, lets start searching.
                 while ( !fileOfPolicies.endOfFile() && !matchFound )
                     {
-                        // Read in the line as a Policy holder Will just
-                        // be an invalid, "blank" Policy Holder if the
-                        // line isn't in the correct format.
+                        // Read in the line as a policy holder.
+
+                        // It's expected if the policy holder class is
+                        // passed invalid data that it will just create
+                        // a blank policy holder.
+
+                        // A blank policy holder shouldn't match the
+                        // given holder we're searching for, unless the
+                        // user added in blank data. So that will give a
+                        // false positive.
                         currentFilePolicyHolder = new PolicyHolder( readLine() );
 
                         matchFound = inHolder.equals( currentFilePolicyHolder );
                     }
             }
 
+        // If a match was found, then the next three lines should be the
+        // policy holder's home, car, and travel policies in that order.
+        // Pass each line into the policy holder. As far as we're
+        // concerned, policy holder does it all.
+        if ( matchFound )
+            {
+                currentFilePolicyHolder.setHomePolicy( readLine() );
+                currentFilePolicyHolder.setCarPolicy( readLine() );
+                currentFilePolicyHolder.setTravelPolicy( readLine() );
+            }
+        else
+            {
+                // We didn't find a match, so make sure we will return a
+                // null result.
+                currentFilePolicyHolder = null;
+            }
+
         // TextFile takes care of file closing for us, no need to check
         // if the file opened.
         fileOfPolicies.closeFile();
 
-        // Be sure to set our file handle to null.
+        // Be sure to clear off our file handle.
         fileOfPolicies = null;
 
-        return matchFound;
+        return currentFilePolicyHolder;
     }
 
     // Given a single policy holder, write that policy holder to the

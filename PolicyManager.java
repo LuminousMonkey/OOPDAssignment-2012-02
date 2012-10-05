@@ -6,7 +6,7 @@
 // REFERENCE: None.
 // COMMENTS:  None.
 // REQUIRES:  None.
-// Last Mod:  13th September 2012
+// Last Mod:  5th October 2012
 
 import io.ConsoleInput;
 
@@ -74,7 +74,10 @@ class PolicyManager
         return optionSelected;
     }
 
-    // This is what does the actual work in what we do next.
+    // This is what does the actual work in what we do next.  The
+    // character that's passed in is expected to be either 'a', 'v', or
+    // 'q'.
+    // Anything else will pass through like yesterday's sour milk.
     private static void processMenuOption( char optionSelected )
     {
         switch ( optionSelected )
@@ -90,5 +93,32 @@ class PolicyManager
                 System.exit( 0 );
                 break;
             }
+    }
+
+    // Prompt for the details of a new policy holder.  There is no
+    // checked done here, as we can't verify anything, and doing so is
+    // making mountains out of molehills.
+    private static void promptNewPolicyHolder()
+    {
+        System.out.println( "Adding new policy holder, please enter: " );
+        String name = ConsoleInput.readLine( "Name" );
+        String address = ConsoleInput.readLine( "Address" );
+        String phoneNumber = ConsoleInput.readLine( "Phone number" );
+
+        // If we're appending, then we check that the policy holder
+        // doesn't already exist.
+
+        // Otherwise, we just create and add the policy holder.
+    }
+
+    // The user wants to view a policy, we just need the name and the
+    // address.
+    private static void viewPolicyHolder()
+    {
+        System.out.println( "Viewing eh? Please enter: " );
+        String name = ConsoleInput.readLine( "Name" );
+        String address = ConsoleInput.readLine( "Address" );
+
+        // Search for the policy holder, if
     }
 }

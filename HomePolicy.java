@@ -71,7 +71,9 @@ public class HomePolicy extends Policy
         // The format of the string should match the format of our
         // toString function.
 
-        // Break down the string into substrings based on the field seperator.
+        // Break down the string into substrings based on the field
+        // seperator.  Just takes the string, and returns what should be
+        // an array of the seperate fields.
         String[] fields = Utility.fieldStrings( inFileLine );
 
         // Fields are all hardcoded.  Date field should always be

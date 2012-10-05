@@ -110,6 +110,23 @@ public class PolicyHolder
         homeInsurance = new HomePolicy( inHomePolicy );
     }
 
+    // The following setters will take a string of the related policy
+    // and update the policy holder's insurance details to match.
+    public void setHomePolicy( String inHomePolicy )
+    {
+        homeInsurance = new HomePolicy( inHomePolicy );
+    }
+
+    public void setCarPolicy( String inCarPolicy )
+    {
+        carInsurance = new CarPolicy( inCarPolicy );
+    }
+
+    public void setTravelPolicy( String inTravelPolicy )
+    {
+        travelInsurance = new TravelPolicy( inTravelPolicy );
+    }
+
     public String toString()
     {
         return name + "," + address + "(" + phoneNumber + ")";
