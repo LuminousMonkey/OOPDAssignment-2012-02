@@ -66,6 +66,22 @@ public class TravelPolicy extends Policy
         policyCountry = country;
     }
 
+    // Returns a string that can be used to display the policy details
+    // out to the user.
+    public String displayString()
+    {
+        String result = "No policy";
+
+        // If the policy is active, then give all the details, otherwise
+        // just indicate the policy is not active.
+        if ( active() )
+            {
+                result = "Date: " + dateString() + "\n" +
+                    "Country: " + policyCountry + "\n" +
+                    "Premium: " + calculatePremium();
+            }
+    }
+
     // Returns the calculation of the travel insurance premium, very
     // simple, just the base premium, then an extra amount is added on
     // if the country matches any of the high premium countries.

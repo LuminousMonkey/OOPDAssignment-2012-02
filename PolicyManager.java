@@ -12,6 +12,11 @@ import io.ConsoleInput;
 
 class PolicyManager
 {
+    // Our constants for menu choices.
+    private static final char VIEW_HOLDER_KEY = 'v';
+    private static final char ADD_HOLDER_KEY = 'a';
+    private static final char QUIT_HOLDER_KEY = 'q';
+
     public static void main( String[] args )
     {
         // Prompt for filename
@@ -54,7 +59,7 @@ class PolicyManager
         displayAddNewPolicyOption( willCreateFile );
         displayViewPolicyOption( willCreateFile );
 
-        System.out.println( "(Q)uit" );
+        System.out.println( QUIT_HOLDER_KEY + " - Quit" );
     }
 
     // Our add new policy holder menu option varies if the policy file
@@ -69,7 +74,7 @@ class PolicyManager
             {
                 newOrExistingFileMessage = " and create file.";
             }
-        System.out.println( "(A)dd a new policy holder" );
+        System.out.println( ADD_HOLDER_KEY + " - Add a new policy holder" );
     }
 
     private static void displayViewPolicyOption( boolean willCreateFile )
@@ -77,7 +82,8 @@ class PolicyManager
         // Can't view a policy holder if the file doesn't exist.
         if ( !willCreateFile )
             {
-                System.out.println( "(V)iew a policyholder's policies" );
+                System.out.println( VIEW_HOLDER_KEY +
+                                    " - View a policyholder's policies" );
             }
         else
             {
@@ -93,9 +99,14 @@ class PolicyManager
 
         do
             {
-                optionSelected = ConsoleInput.readChar( "Please select a menu option" );
-            } while ( optionSelect != 'a' && optionSelect != 'v' &&
-                      optionSelect != 'q' );
+                // Get a single character from the user, make sure it's
+                // lowercase.
+                optionSelected = Character.toLowerCase(
+                                   ConsoleInput.readChar(
+                                   "Please select a menu option" ) );
+            } while ( optionSelect != VIEW_HOLDER_KEY &&
+                      optionSelect != ADD_HOLDER_KEY &&
+                      optionSelect != QUIT_HOLDER_KEY );
 
         return optionSelected;
     }
@@ -108,10 +119,10 @@ class PolicyManager
     {
         switch ( optionSelected )
             {
-            case 'a':
+            case ADD_HOLDER_KEY:
                 addNewPolicyHolder();
                 break;
-            case 'v':
+            case VIEW_HOLDER_KEY:
                viewPolicyHolder();
                 break;
             }
@@ -120,17 +131,27 @@ class PolicyManager
     // Prompt for the details of a new policy holder.  There is no
     // checked done here, as we can't verify anything, and doing so is
     // making mountains out of molehills.
-    private static void promptNewPolicyHolder()
+    //
+    // Could possibly be moved into the Policy Holder class, but fixing
+    // GUI stuff into a lower level class like that, not sure if it's
+    // the be for seperation of concerns.
+    private static void promptNewPolicyHolder( PolicyFile currentFile )
     {
         System.out.println( "Adding new policy holder, please enter: " );
         String name = ConsoleInput.readLine( "Name" );
         String address = ConsoleInput.readLine( "Address" );
         String phoneNumber = ConsoleInput.readLine( "Phone number" );
 
-        // If we're appending, then we check that the policy holder
-        // doesn't already exist.
+        // PolicyFile takes care of appending, or creating files.
+        // A result of false means that the policy holder already
+        // existed in the file.
+        holderWrittenToFile = currentFile.writeHolderToFile(
+          PolicyHolder.new( name, address, phoneNumber ) );
 
-        // Otherwise, we just create and add the policy holder.
+        if ( !holderWrittenToFile )
+            {
+                System.out.println( "Policy holder already exists in file." );
+            }
     }
 
     // The user wants to view a policy, we just need the name and the
@@ -141,8 +162,19 @@ class PolicyManager
         String name = ConsoleInput.readLine( "Name" );
         String address = ConsoleInput.readLine( "Address" );
 
+        PolicyHolder policyHolderToView = new PolicyHolder( name, address, "" );
+
         // Search for the policy holder, if we find the policy holder,
         // then show the holder to the user.
         PolicyFile insurances = PolicyFile( "test.txt" );
+
+        PolicyHolder holderFound = insurances.findHolder( policyHolderToView );
+
+        if ( holderFound )
+            {
+                // We found them!
+                // Show them to the user.
+
+            }
     }
 }

@@ -97,6 +97,17 @@ public class CarPolicy extends Policy
         manufactureYear = year;
     }
 
+    // Returns a string that can be used to display the policy out to
+    // the user.
+    public String displayString()
+    {
+        return "Date: " + dateString() + "\n" +
+            "Make: " + make + "\n" +
+            "Model: " + model + "\n" +
+            "Year: " + year + "\n" +
+            "Premium: " + calculatePremium();
+    }
+
     // Returns a string array of the fields and their order in the text
     // file.
     protected String[] policyFields()

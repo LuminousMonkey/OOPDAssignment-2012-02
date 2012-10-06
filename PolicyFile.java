@@ -159,7 +159,7 @@ public class PolicyFile
     // This method already assumes that the file has already been tested
     // if it exists, or can be read, any failure should result in false
     // being returned.
-    public PolicyHolder find( PolicyHolder inHolder )
+    public PolicyHolder findHolder( PolicyHolder inHolder )
     {
         // To check if a policy holder exists in a file, we open it, and
         // loop through each entry, comparing with the policy holder
@@ -230,6 +230,8 @@ public class PolicyFile
         // We don't actually keep the file handle open all
         // the time, we only open it for when we need it.
         TextFile fileToWriteTo = new TextFile( filename, WRITE_MODE );
+
+
 
         boolean result = false;
         if ( fileToWriteTo.openFile() )

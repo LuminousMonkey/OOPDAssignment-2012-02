@@ -113,6 +113,16 @@ public class HomePolicy extends Policy
         return numberOfStories;
     }
 
+    // Returns a string that can be used to display the policy out to
+    // the user.
+    public String displayString()
+    {
+        return "Date: " + dateString() + "\n" +
+            "Post Code: " + postCode + "\n" +
+            "Number of stories: " + numberOfStories + "\n" +
+            "Premium: " + calculatePremium();
+    }
+
     // Returns the calculation of the home insurance premium based on
     // postcode. If the postcode on a policy matches one of the higher
     // premium postcodes, then we're going to charge more, otherwise
@@ -136,7 +146,8 @@ public class HomePolicy extends Policy
                         result += HIGHER_PREMIUM;
                     }
                 postCodeIndex++;
-            } while ( !increasedPremium && postCodeIndex < HIGHER_PREMIUM_POSTCODES.length );
+            } while ( !increasedPremium && postCodeIndex <
+                      HIGHER_PREMIUM_POSTCODES.length );
 
         return result;
     }

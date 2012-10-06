@@ -32,6 +32,14 @@ public abstract class Policy
         return date.toString();
     }
 
+    // Policy Active
+    //
+    // Will return true if the policy is active (i.e. has a date).
+    protected boolean active()
+    {
+        return !date.isNullDate;
+    }
+
     // All insurance policies must have a premium that must be
     // calculated, the premium calculation may depend on details in the
     // poilcy, so if this method is called before policy information is
@@ -44,6 +52,10 @@ public abstract class Policy
     // have this method. When called, it returns a String array of the
     // fields, in the order they need to be saved in the file.
     protected abstract String[] policyFields();
+
+    // Each policy should provide a method that returns a string that
+    // can be used to show the policy details to the user.
+    abstract String displayString();
 
     // Returns the policy as a single line, as expected in the file
     // format.

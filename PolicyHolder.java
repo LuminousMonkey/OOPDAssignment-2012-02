@@ -127,6 +127,21 @@ public class PolicyHolder
         travelInsurance = new TravelPolicy( inTravelPolicy );
     }
 
+    // Returns a string that can be used to display a whole policy to
+    // the user.
+    public String displayString()
+    {
+        return "Name: " + name + "\n" +
+            "Address: " + address + "\n" +
+            "Phone number: " + phoneNumber + "\n" +
+            "Home Policy\n" +
+            homeInsurance.displayString() + "\n" +
+            "Car Policy\n" +
+            carInsurance.displayString() + "\n" +
+            "Travel Policy\n" +
+            travelInsurance.displayString() + "\n";
+    }
+
     public String toString()
     {
         return name + "," + address + "(" + phoneNumber + ")";
@@ -139,6 +154,8 @@ public class PolicyHolder
     {
         boolean result = true;
 
+        // Handle the case of being handed null or completely different
+        // objects.
         if ( !(inObj instanceof PolicyHolder ) )
             {
                 result = false;
