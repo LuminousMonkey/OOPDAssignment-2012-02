@@ -6,7 +6,7 @@
 // REFERENCE: None.
 // COMMENTS:  None.
 // REQUIRES:  java.util.Calendar for getting the current year.
-// Last Mod:  11th September 2012
+// Last Mod:  8th October 2012
 
 import java.util.Calendar;
 import io.ConsoleInput;
@@ -41,9 +41,9 @@ public class CarPolicy extends Policy
     // Default constructor
     public CarPolicy()
     {
-        this.setInactive();
-        // Default values for other fields should be already set in
-        // initialisation.
+        // All our default values are set in the fields above, just call
+        // the parent constructor.
+        super();
     }
 
     // Alternate Constructor
@@ -56,13 +56,14 @@ public class CarPolicy extends Policy
         setYear( year );
     }
 
-    // Takes a single line from the policy file as a string and returns
-    // a matching home policy file.
+    // Alternate Constructor
+    //
+    // Takes a string, the string is expected to be in the format as
+    // defined in the assignment spec. It will ignore any extra fields
+    // on the line, and doesn't do any real error checking. Any weird
+    // formats in the fields it does expect may give weird behaviour.
     public CarPolicy( String inFileLine )
     {
-        // The format of the string should match the format of our
-        // toString function.
-
         // Break down the string into substrings based on the field seperator.
         String[] fields = Policy.fieldStrings( inFileLine );
 
@@ -102,8 +103,13 @@ public class CarPolicy extends Policy
     // the user.
     public String toString()
     {
+        // Build the initial string from our parent, the result should
+        // either be whatever the no policy text is, or the date of the
+        // policy.
         String result = super.toString();
 
+        // We only output the remaining fields if the policy is active,
+        // otherwise it will just be whatever the parent class outputs.
         if ( isActive() )
             {
                 result += "\n" +
@@ -116,8 +122,13 @@ public class CarPolicy extends Policy
         return result;
     }
 
-    // Returns a string array of the fields and their order in the text
-    // file.
+    // Returns a string array of the fields of this policy, in the order
+    // they should be in the text file. This is expected to be called by
+    // the fieldFields method of the parent, the Policy class.
+    //
+    // This was done so I didn't have to duplicate code in the three
+    // children classes, and that if the field delimiter changes, it
+    // just has to change in one place.
     protected String[] policyFields()
     {
         String[] resultArray = { dateString(),
@@ -137,11 +148,25 @@ public class CarPolicy extends Policy
         return BASE_PREMIUM / ( 1 + AGING_FACTOR * carAge );
     }
 
+    // Prompt the user for the car insurance details.
+    //
+    // It's hard to say if it's really the right place for this, as it's
+    // mixing Input/Output into a class that could be more
+    // "pure". However, my argument is that the PolicyManager class
+    // shouldn't really know the internals of the policies too much, and
+    // that would include know what fields to prompt the user for.
+    //
+    // However, if you really wanted to get rid of the coupling to the
+    // ConsoleInput class and the prompts to the user, etc, you would
+    // come up with a scheme where this class would advertise the
+    // prompts, etc, basically come up with an internal kind of protocol
+    // that represented inputs, validation, etc, needed.
     public static CarPolicy promptForInsurance()
     {
         PolicyDate date = PolicyDate.promptForDate();
         CarPolicy newPolicy = new CarPolicy();
 
+        // No point asking for more fields if the policy isn't active.
         if ( !date.isNullDate() )
             {
                 String make = ConsoleInput.readLine( "Please enter make of car" );

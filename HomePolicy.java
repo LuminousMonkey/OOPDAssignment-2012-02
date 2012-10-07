@@ -45,11 +45,10 @@ public class HomePolicy extends Policy
     // Default constructor
     public HomePolicy()
     {
-        this.setInactive();
-        // Number of stores and postcode should already be invalid.
+        // All our default values are set in the fields above, just call
+        // the parent constructor.
+        super();
     }
-
-    
 
     private HomePolicy( PolicyDate inDate, int inPostCode, int inStories )
     {

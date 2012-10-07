@@ -36,9 +36,9 @@ public class TravelPolicy extends Policy
     // Default constructor
     public TravelPolicy()
     {
-        this.setInactive();
-        // Remaining fields should already be set in fields.
-
+        // All our default values are set in the fields above, just call
+        // the parent constructor.
+        super();
     }
 
     // Alternate Constructor

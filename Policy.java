@@ -15,11 +15,15 @@ public abstract class Policy
     // Our field seperator when we save to, read, from the file.
     private static final String FIELD_DELIMITER = ":";
 
-    // An inactive policy is just represented by a special null date value.
-    private static final String NULL_DATE = "0";
-
     // Variables
-    private PolicyDate date = null;
+    private PolicyDate date = new PolicyDate();
+
+    // Default constructor
+    protected Policy()
+    {
+        // By default a blank policy will have be Inactive
+        setInactive();
+    }
 
     // All policies must have a date, hence the policy interface must
     // have a way of having a date set.
@@ -37,7 +41,7 @@ public abstract class Policy
     // format that should be expected in the text file.
     protected String dateString()
     {
-        String result = NULL_DATE;
+        String result = Integer.toString( PolicyDate.NULL_DATE );
 
         if ( date != null )
             {
@@ -62,13 +66,13 @@ public abstract class Policy
     // Returns true if the policy is inactive.
     protected boolean isInactive()
     {
-        return ( date == null );
+        return ( date.isNullDate() );
     }
-    
+
     // Just a straight inversion of isInactive, created just so statements read better.
     protected boolean isActive()
     {
-    	return !isInactive();
+        return !isInactive();
     }
 
     // All insurance policies must have a premium that must be
@@ -108,28 +112,30 @@ public abstract class Policy
         return interposeFields( stringFields );
     };
 
-    // At the most basic level, a policy just has a date, if there is no date, there is no policy.
-    // Strings returned from this method are not expected to have newlines at the end of the string, but in the middle of the string is fine.
+    // At the most basic level, a policy just has a date, if there is no
+    // date, there is no policy.  Strings returned from this method are
+    // not expected to have newlines at the end of the string, but in
+    // the middle of the string is fine.
     public String toString()
     {
-    	String result = "No policy";
-    	
-    	if ( isActive() )
-    	{
-    		result = "Date: " + dateString();
-    	}
-    	
-    	return result;
-    }
-    
-    // Given a string, return an array of strings broken down by the
-	// delimiter.
-	public static String[] fieldStrings( String fieldLine )
-	{
-	    return fieldLine.split( FIELD_DELIMITER );
-	}
+        String result = "No policy";
 
-	// interposeFields
+        if ( isActive() )
+        {
+                result = "Date: " + dateString();
+        }
+
+        return result;
+    }
+
+    // Given a string, return an array of strings broken down by the
+    // delimiter.
+    public static String[] fieldStrings( String fieldLine )
+    {
+        return fieldLine.split( FIELD_DELIMITER );
+    }
+
+    // interposeFields
     //
     // Takes the array returned from the policyFields method and returns
     // a string with the FIELD_DELIMITER interposed between those

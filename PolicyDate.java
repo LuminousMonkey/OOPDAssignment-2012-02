@@ -22,14 +22,21 @@ public class PolicyDate {
 
     // The date of the policy, this should always be initalised by a
     // constructor and never be changed once it has been set.
-    private Date dateOfPolicy;
+    private Date dateOfPolicy = null;
 
     // Assume we have a null date until it gets set.
     private boolean dateIsNull = true;
 
     // Constants
     // Value that represents "No Date", hence no policy.
-    private static final int NULL_DATE = 0;
+    public static final int NULL_DATE = 0;
+
+    // Default Constructor
+    public PolicyDate()
+    {
+        // Everything should already be set to the correct values in the
+        // field declarations above.
+    }
 
     // Constructors
     public PolicyDate( String dateToParse )
@@ -54,6 +61,13 @@ public class PolicyDate {
                         dateOfPolicy = null;
                     }
             }
+    }
+
+    // Alternative constructor
+    public PolicyDate( int dateFromInt )
+    {
+        // It's a bit weird, we're moving int to string to int.
+        this( Integer.toString( dateFromInt ) );
     }
 
     // Copy constructor
