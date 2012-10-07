@@ -101,11 +101,18 @@ public class CarPolicy extends Policy
     // the user.
     public String displayString()
     {
-        return "Date: " + dateString() + "\n" +
-            "Make: " + make + "\n" +
-            "Model: " + model + "\n" +
-            "Year: " + year + "\n" +
-            "Premium: " + calculatePremium();
+        String result = "No policy";
+
+        if ( active() )
+            {
+                return "Date: " + dateString() + "\n" +
+                    "Make: " + carMake + "\n" +
+                    "Model: " + carModel + "\n" +
+                    "Year: " + manufactureYear + "\n" +
+                    "Premium: " + calculatePremium();
+            }
+
+        return result;
     }
 
     // Returns a string array of the fields and their order in the text

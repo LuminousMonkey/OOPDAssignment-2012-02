@@ -146,7 +146,7 @@ class PolicyManager
         // A result of false means that the policy holder already
         // existed in the file.
         holderWrittenToFile = currentFile.writeHolderToFile(
-          PolicyHolder.new( name, address, phoneNumber ) );
+          new PolicyHolder( name, address, phoneNumber ) );
 
         if ( !holderWrittenToFile )
             {
@@ -162,13 +162,11 @@ class PolicyManager
         String name = ConsoleInput.readLine( "Name" );
         String address = ConsoleInput.readLine( "Address" );
 
-        PolicyHolder policyHolderToView = new PolicyHolder( name, address, "" );
-
         // Search for the policy holder, if we find the policy holder,
         // then show the holder to the user.
         PolicyFile insurances = PolicyFile( "test.txt" );
 
-        PolicyHolder holderFound = insurances.findHolder( policyHolderToView );
+        PolicyHolder holderFound = insurances.findHolder( name, address );
 
         if ( holderFound )
             {

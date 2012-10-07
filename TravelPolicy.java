@@ -80,6 +80,8 @@ public class TravelPolicy extends Policy
                     "Country: " + policyCountry + "\n" +
                     "Premium: " + calculatePremium();
             }
+
+        return result;
     }
 
     // Returns the calculation of the travel insurance premium, very

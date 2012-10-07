@@ -217,6 +217,14 @@ public class PolicyFile
         return currentFilePolicyHolder;
     }
 
+    // Find a policy holder just via name and address, which as per
+    // assignment spec is the only thing that matters.
+    public PolicyHolder findHolder( String inName, String inAddress )
+    {
+        PolicyHolder searchFor = new PolicyHolder( inName, inAddress, "" );
+        return findHolder( searchFor );
+    }
+
     // Given a single policy holder, write that policy holder to the
     // given file, will check that the policy holder doesn't already
     // exist in the file already.

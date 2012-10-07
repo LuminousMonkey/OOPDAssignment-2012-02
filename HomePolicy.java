@@ -117,10 +117,17 @@ public class HomePolicy extends Policy
     // the user.
     public String displayString()
     {
-        return "Date: " + dateString() + "\n" +
-            "Post Code: " + postCode + "\n" +
-            "Number of stories: " + numberOfStories + "\n" +
-            "Premium: " + calculatePremium();
+        String result = "No policy";
+
+        if ( active() )
+            {
+                return "Date: " + dateString() + "\n" +
+                    "Post Code: " + postCode + "\n" +
+                    "Number of stories: " + numberOfStories + "\n" +
+                    "Premium: " + calculatePremium();
+            }
+
+        result result;
     }
 
     // Returns the calculation of the home insurance premium based on

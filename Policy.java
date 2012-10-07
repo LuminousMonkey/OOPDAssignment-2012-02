@@ -6,7 +6,7 @@
 // REFERENCE: None.
 // COMMENTS:  None.
 // REQUIRES:  None.
-// Last Mod:  11th September 2012
+// Last Mod:  7th October 2012
 
 public abstract class Policy
 {
@@ -37,7 +37,7 @@ public abstract class Policy
     // Will return true if the policy is active (i.e. has a date).
     protected boolean active()
     {
-        return !date.isNullDate;
+        return !date.isNullDate();
     }
 
     // All insurance policies must have a premium that must be
