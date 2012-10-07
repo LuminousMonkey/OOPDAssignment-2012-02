@@ -18,15 +18,15 @@ public class PolicyFile
     private static final String WRITE_MODE = "w";
     private static final String APPEND_MODE = "a";
 
-    // Our error codes incase we have some problems with reading/writing
-    // to policy files.
+    // Our error codes in case we have some problems with
+    // reading/writing to policy files.
     public enum FileError
     {
         NO_ERROR,               // What it says on the packet, we
                                 // haven't had any errors.
 
         // Since the TextFile class doesn't explicitly allow us to test
-        // for the existance of a file (files may exist, but we can't
+        // for the existence of a file (files may exist, but we can't
         // read or write to them) there is little real difference
         // between EXISTS and READ errors. However, they remain here for
         // completeness and for the possibility of update in the future.
@@ -42,17 +42,13 @@ public class PolicyFile
 
     }
 
-    public enum WriteMode
-    {
-        UNKNOWN,                // File only for reading.
-        WRITE_NEW,              // Create a new file.
-        APPEND                  // Append any new records.
-    }
-
     // Name of the policy file that we want to read/write/append to.
     private String filename = "";
     private FileError fileError = FileError.NO_ERROR;
-    private WriteMode writeMode = WriteMode.UNKNOWN;
+
+    // Assume that we're creating a new file when we write, this should
+    // be updated to APPEND_MODE if the file already exists.
+    private String writeMode = WRITE_MODE;
 
     private TextFile fileOfPolicies = null;
 
@@ -67,22 +63,11 @@ public class PolicyFile
     public PolicyFile( String inFilename )
     {
         filename = inFilename;
-        if ( !fileExists( inFilename ) )
-            {
-                // The filename we've been given is no good for reading,
-                // this isn't necessarily a dealbreaker, as we may still
-                // be able to write to the file.
-                //
-                // The file may exist, but we just can't read it, with
-                // the TextFile class, there's no real way of knowing.
-                fileError = FileError.READ;
-                writeMode = WriteMode.WRITE_NEW;
-            }
-        else
+        if ( fileExists( inFilename ) )
             {
                 // If the file exists, then if we ever write to it,
                 // we're appending.
-                writeMode = WriteMode.APPEND;
+                writeMode = APPEND_MODE;
             }
     }
 
@@ -91,7 +76,7 @@ public class PolicyFile
     //
     // This is an explicit test, give a filename, get a result back,
     // does not keep any instances around.
-    public static boolean fileExists( String filename )
+    private static boolean fileExists( String filename )
     {
         TextFile fileTest = new TextFile( filename, READ_MODE );
 
@@ -106,6 +91,14 @@ public class PolicyFile
         fileTest.closeFile();
 
         return result;
+    }
+
+    // creatingFile
+
+    // Returns true if we're creating a new file, otherwise false.
+    public boolean creatingFile()
+    {
+        return ( writeMode.equals( WRITE_MODE ) );
     }
 
     // Opens the file for reading, expecting to use readLine to try and
@@ -237,9 +230,8 @@ public class PolicyFile
 
         // We don't actually keep the file handle open all
         // the time, we only open it for when we need it.
-        TextFile fileToWriteTo = new TextFile( filename, WRITE_MODE );
 
-
+        TextFile fileToWriteTo = new TextFile( filename, writeMode );
 
         boolean result = false;
         if ( fileToWriteTo.openFile() )
@@ -262,10 +254,10 @@ public class PolicyFile
     // file format is part of how policy files are managed.
     public static String policyHolderEntry( PolicyHolder inPolicyHolder )
     {
-        return inPolicyHolder.toString() + "\n" +
-            inPolicyHolder.getHomeInsurance() + "\n" +
-            inPolicyHolder.getCarInsurance() + "\n" +
-            inPolicyHolder.getTravelInsurance() + "\n";
+        return inPolicyHolder.fileString() + "\n" +
+            inPolicyHolder.getHomeInsurance().fileString() + "\n" +
+            inPolicyHolder.getCarInsurance().fileString() + "\n" +
+            inPolicyHolder.getTravelInsurance().fileString() + "\n";
     }
 
     // Return a human readable error string.

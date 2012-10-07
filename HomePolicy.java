@@ -8,6 +8,8 @@
 // REQUIRES:  None.
 // Last Mod:  11th September 2012
 
+import io.ConsoleInput;
+
 public class HomePolicy extends Policy
 {
     // Constants
@@ -43,17 +45,24 @@ public class HomePolicy extends Policy
     // Default constructor
     public HomePolicy()
     {
-        setDate( PolicyDate.NULL_DATE );
+        this.setInactive();
         // Number of stores and postcode should already be invalid.
     }
 
     // Alternate Constructor
-    public HomePolicy( int date, int postCode, int stories )
+    public HomePolicy( String date, int postCode, int stories )
     {
         // Assume the fields are correct for now.
         setDate( date );
         setPostCode( postCode );
         setNumberOfStories( stories );
+    }
+
+    public HomePolicy( PolicyDate inDate, int inPostCode, int inStories )
+    {
+        setDate( inDate );
+        postCode = inPostCode;
+        numberOfStories = inStories;
     }
 
     // Copy constructor
@@ -115,11 +124,11 @@ public class HomePolicy extends Policy
 
     // Returns a string that can be used to display the policy out to
     // the user.
-    public String displayString()
+    public String toString()
     {
         String result = "No policy";
 
-        if ( active() )
+        if ( !isInactive() )
             {
                 return "Date: " + dateString() + "\n" +
                     "Post Code: " + postCode + "\n" +
@@ -127,7 +136,7 @@ public class HomePolicy extends Policy
                     "Premium: " + calculatePremium();
             }
 
-        result result;
+        return result;
     }
 
     // Returns the calculation of the home insurance premium based on
@@ -169,5 +178,28 @@ public class HomePolicy extends Policy
                                  Integer.toString( numberOfStories )};
 
         return resultArray;
+    }
+
+    // Prompt the user for the needed details for the insurance.
+    //
+    // Doing this mixes up the input/output code a little, however, it
+    // seems more logical to have the object take care of it's own data
+    // collection, since it knows what it needs, and what would be
+    // accurate.
+    //
+    // Returns a home policy instance with the details.
+    public static HomePolicy promptForInsurance()
+    {
+        PolicyDate date = PolicyDate.promptForDate();
+        HomePolicy newPolicy = new HomePolicy();
+
+        if (!date.isNullDate() )
+            {
+                int postCode = ConsoleInput.readInt( "Please enter postcode" );
+                int numberOfStories = ConsoleInput.readInt( "Please enter number of stories" );
+                newPolicy = new HomePolicy( date, postCode, numberOfStories );
+            }
+
+        return newPolicy;
     }
 }

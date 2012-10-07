@@ -46,6 +46,16 @@ public class PolicyHolder
         phoneNumber = inPhoneNumber;
     }
 
+    // Alternative constructor
+    //
+    // Used mainly for searching.
+    public PolicyHolder( String inName, String inAddress )
+    {
+        name = inName;
+        address = inAddress;
+        phoneNumber = "";
+    }
+
     // Alternate constructor If we've given a single string, then we
     // expect it to be the same as the output string of our toString method.
     public PolicyHolder( String inHolder )
@@ -127,24 +137,41 @@ public class PolicyHolder
         travelInsurance = new TravelPolicy( inTravelPolicy );
     }
 
-    // Returns a string that can be used to display a whole policy to
-    // the user.
-    public String displayString()
+    // Collect the insurance details for each policy
+    public void promptForInsurances()
+    {
+        System.out.println( "Home Insurance" );
+        homeInsurance = HomePolicy.promptForInsurance();
+
+        System.out.println( "Car Insurance" );
+        carInsurance = CarPolicy.promptForInsurance();
+
+        System.out.println( "Travel Insurance" );
+        travelInsurance = TravelPolicy.promptForInsurance();
+    }
+
+    // fileString
+
+    // Returns a string that represents the format that the policy
+    // should be saved to in the file.
+    public String fileString()
+    {
+        return name + "," + address + "(" + phoneNumber + ")";
+    }
+
+    // Returns the policy as a string, will have the field names, etc,
+    // possibly with newlines.
+    public String toString()
     {
         return "Name: " + name + "\n" +
             "Address: " + address + "\n" +
             "Phone number: " + phoneNumber + "\n" +
             "Home Policy\n" +
-            homeInsurance.displayString() + "\n" +
+            homeInsurance + "\n" +
             "Car Policy\n" +
-            carInsurance.displayString() + "\n" +
+            carInsurance + "\n" +
             "Travel Policy\n" +
-            travelInsurance.displayString() + "\n";
-    }
-
-    public String toString()
-    {
-        return name + "," + address + "(" + phoneNumber + ")";
+            travelInsurance + "\n";
     }
 
     // The equals method, this is one of the base methods that are

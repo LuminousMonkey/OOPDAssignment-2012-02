@@ -9,6 +9,7 @@
 // Last Mod:  11th September 2012
 
 import java.util.Calendar;
+import io.ConsoleInput;
 
 public class CarPolicy extends Policy
 {
@@ -40,13 +41,13 @@ public class CarPolicy extends Policy
     // Default constructor
     public CarPolicy()
     {
-        setDate( PolicyDate.NULL_DATE );
+        this.setInactive();
         // Default values for other fields should be already set in
         // initialisation.
     }
 
     // Alternate Constructor
-    public CarPolicy( int date, String make, String model, int year )
+    public CarPolicy( PolicyDate date, String make, String model, int year )
     {
         // Assume the fields are correct for now.
         setDate( date );
@@ -99,11 +100,11 @@ public class CarPolicy extends Policy
 
     // Returns a string that can be used to display the policy out to
     // the user.
-    public String displayString()
+    public String toString()
     {
         String result = "No policy";
 
-        if ( active() )
+        if ( !isInactive() )
             {
                 return "Date: " + dateString() + "\n" +
                     "Make: " + carMake + "\n" +
@@ -134,5 +135,22 @@ public class CarPolicy extends Policy
         int carAge = Calendar.getInstance().get( Calendar.YEAR ) -
             manufactureYear;
         return BASE_PREMIUM / ( 1 + AGING_FACTOR * carAge );
+    }
+
+    public static CarPolicy promptForInsurance()
+    {
+        PolicyDate date = PolicyDate.promptForDate();
+        CarPolicy newPolicy = new CarPolicy();
+
+        if ( !date.isNullDate() )
+            {
+                String make = ConsoleInput.readLine( "Please enter make of car" );
+                String model = ConsoleInput.readLine( "Please enter model of car" );
+                int year = ConsoleInput.readInt( "Please enter year of car" );
+
+                newPolicy = new CarPolicy( date, make, model, year );
+            }
+
+        return newPolicy;
     }
 }

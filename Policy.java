@@ -10,6 +10,14 @@
 
 public abstract class Policy
 {
+    // Constants
+    //
+    // Our field seperator when we save to, read, from the file.
+    private static final String FIELD_DELIMITER = ":";
+
+    // An inactive policy is just represented by a special null date value.
+    private static final String NULL_DATE = "0";
+
     // Variables
     private PolicyDate date = null;
 
@@ -20,31 +28,48 @@ public abstract class Policy
         date = new PolicyDate( dateToParse );
     }
 
-    protected void setDate( int dateToParse )
+    protected void setDate( PolicyDate inDate )
     {
-        date = new PolicyDate( Integer.toString( dateToParse ) );
+        date = new PolicyDate( inDate );
     }
 
     // Accessors Returns the date as a string, the format will match the
     // format that should be expected in the text file.
     protected String dateString()
     {
-        return date.toString();
+        String result = NULL_DATE;
+
+        if ( date != null )
+            {
+                result = date.toString();
+            }
+
+        return result;
     }
 
-    // Policy Active
+    // setInactive
     //
-    // Will return true if the policy is active (i.e. has a date).
-    protected boolean active()
+    // A policy might not be active, this method is to be called if the
+    // policy isn't active, otherwise a valid date for the policy must
+    // be provided.
+    protected void setInactive()
     {
-        return !date.isNullDate();
+        date = null;
+    }
+
+    // isInactive
+
+    // Returns true if the policy is inactive.
+    protected boolean isInactive()
+    {
+        return ( date == null );
     }
 
     // All insurance policies must have a premium that must be
     // calculated, the premium calculation may depend on details in the
     // poilcy, so if this method is called before policy information is
     // set, it must return a null value.
-    abstract double calculatePremium();
+    public abstract double calculatePremium();
 
     // Since each policy has potentially different formats for the
     // string that is saved to the text file, we need a general way to
@@ -55,11 +80,7 @@ public abstract class Policy
 
     // Each policy should provide a method that returns a string that
     // can be used to show the policy details to the user.
-    abstract String displayString();
-
-    // Returns the policy as a single line, as expected in the file
-    // format.
-    public String toString()
+    public String fileString()
     {
         // This one method covers outputting the policy fields to the
         // line format expected in the text file, interposeFields takes
@@ -70,16 +91,37 @@ public abstract class Policy
 
         // If the date is null, then we don't have any fields except the
         // null date.
-        if ( date.isNullDate() )
+        if ( this.isInactive() )
             {
-                // Can't use the syntax sugar of "array = {};" here
-                // because that only works with initialisation of
-                // variables, so we create an array of length 1, and
-                // just put the date in it.
+                // If the policy isn't active (a date of 0), then all we
+                // need to do is have the date field.
                 stringFields = new String[1];
-                stringFields[0] = date.toString();
+                stringFields[0] = this.dateString();
             }
 
-        return Utility.interposeFields( stringFields );
+        return interposeFields( stringFields );
     };
+
+    // interposeFields
+    //
+    // Takes the array returned from the policyFields method and returns
+    // a string with the FIELD_DELIMITER interposed between those
+    // fields. The end result being a string that is in the format
+    // expected for saving a policy line to the file.
+    private static String interposeFields( String[] fields )
+    {
+        // Our result string, this is not the best way to make a string
+        // like this, but it's assumed we're not using lots of fields,
+        // otherwise use StringBuilder.
+        String result = "";
+
+        // For each field in the array, put the delimiter between the
+        // fields.
+        for ( String field : fields )
+            {
+                result += field + FIELD_DELIMITER;
+            }
+
+        return result;
+    }
 }

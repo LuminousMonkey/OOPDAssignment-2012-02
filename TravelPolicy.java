@@ -8,6 +8,8 @@
 // REQUIRES:  None.
 // Last Mod:  11th September 2012
 
+import io.ConsoleInput;
+
 public class TravelPolicy extends Policy
 {
     // Constants
@@ -34,13 +36,13 @@ public class TravelPolicy extends Policy
     // Default constructor
     public TravelPolicy()
     {
-        setDate( PolicyDate.NULL_DATE );
+        this.setInactive();
         // Remaining fields should already be set in fields.
 
     }
 
     // Alternate Constructor
-    public TravelPolicy( int date, String policyCountry )
+    public TravelPolicy( PolicyDate date, String policyCountry )
     {
         setDate( date );
         setCountry( policyCountry );
@@ -68,13 +70,13 @@ public class TravelPolicy extends Policy
 
     // Returns a string that can be used to display the policy details
     // out to the user.
-    public String displayString()
+    public String toString()
     {
         String result = "No policy";
 
         // If the policy is active, then give all the details, otherwise
         // just indicate the policy is not active.
-        if ( active() )
+        if ( !isInactive() )
             {
                 result = "Date: " + dateString() + "\n" +
                     "Country: " + policyCountry + "\n" +
@@ -118,5 +120,20 @@ public class TravelPolicy extends Policy
                                  policyCountry };
 
         return resultArray;
+    }
+
+    public static TravelPolicy promptForInsurance()
+    {
+        PolicyDate date = PolicyDate.promptForDate();
+        TravelPolicy newPolicy = new TravelPolicy();
+
+        if ( !date.isNullDate() )
+            {
+                // User entered in a date.
+                String country = ConsoleInput.readLine( "Please enter country" );
+                newPolicy = new TravelPolicy( date, country );
+            }
+
+        return newPolicy;
     }
 }

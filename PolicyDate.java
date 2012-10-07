@@ -13,6 +13,7 @@
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import io.ConsoleInput;
 
 public class PolicyDate {
     // Our dateformatter should be the same for all objects.
@@ -87,6 +88,24 @@ public class PolicyDate {
             }
 
         return result;
+    }
+
+    // Prompt for date
+
+    // Prompt the user for the date, accept only valid dates, or 0.
+    // Otherwise keep asking, return a policy date instance.
+    public static PolicyDate promptForDate()
+    {
+        PolicyDate inDate = null;
+        int dateFromUser = -1;
+
+        do
+            {
+                dateFromUser = ConsoleInput.readInt( "Enter date of policy, YYYYMMDD format. 0 for no policy" );
+                inDate = new PolicyDate( Integer.toString( dateFromUser ) );
+            } while ( dateFromUser != 0 && inDate.dateIsNull  );
+
+        return inDate;
     }
 
     // The equals method for comparing two dates,
