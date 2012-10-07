@@ -13,7 +13,7 @@ import io.ConsoleInput;
 public class HomePolicy extends Policy
 {
     // Constants
-    // Base premium for all polcies.
+    // Base premium for all policies.
     private static final double BASE_PREMIUM = 500.00;
 
     // Amount to be added for postcodes defined as higher premium.
@@ -49,16 +49,9 @@ public class HomePolicy extends Policy
         // Number of stores and postcode should already be invalid.
     }
 
-    // Alternate Constructor
-    public HomePolicy( String date, int postCode, int stories )
-    {
-        // Assume the fields are correct for now.
-        setDate( date );
-        setPostCode( postCode );
-        setNumberOfStories( stories );
-    }
+    
 
-    public HomePolicy( PolicyDate inDate, int inPostCode, int inStories )
+    private HomePolicy( PolicyDate inDate, int inPostCode, int inStories )
     {
         setDate( inDate );
         postCode = inPostCode;
@@ -81,9 +74,9 @@ public class HomePolicy extends Policy
         // toString function.
 
         // Break down the string into substrings based on the field
-        // seperator.  Just takes the string, and returns what should be
-        // an array of the seperate fields.
-        String[] fields = Utility.fieldStrings( inFileLine );
+        // separator.  Just takes the string, and returns what should be
+        // an array of the separate fields.
+        String[] fields = Policy.fieldStrings( inFileLine );
 
         // Fields are all hardcoded.  Date field should always be
         // present, however if it's the only field, then don't bother
@@ -126,11 +119,11 @@ public class HomePolicy extends Policy
     // the user.
     public String toString()
     {
-        String result = "No policy";
+        String result = super.toString();
 
-        if ( !isInactive() )
+        if ( isActive() )
             {
-                return "Date: " + dateString() + "\n" +
+                result += "\n" +
                     "Post Code: " + postCode + "\n" +
                     "Number of stories: " + numberOfStories + "\n" +
                     "Premium: " + calculatePremium();

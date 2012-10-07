@@ -64,6 +64,12 @@ public abstract class Policy
     {
         return ( date == null );
     }
+    
+    // Just a straight inversion of isInactive, created just so statements read better.
+    protected boolean isActive()
+    {
+    	return !isInactive();
+    }
 
     // All insurance policies must have a premium that must be
     // calculated, the premium calculation may depend on details in the
@@ -91,7 +97,7 @@ public abstract class Policy
 
         // If the date is null, then we don't have any fields except the
         // null date.
-        if ( this.isInactive() )
+        if ( isInactive() )
             {
                 // If the policy isn't active (a date of 0), then all we
                 // need to do is have the date field.
@@ -102,7 +108,28 @@ public abstract class Policy
         return interposeFields( stringFields );
     };
 
-    // interposeFields
+    // At the most basic level, a policy just has a date, if there is no date, there is no policy.
+    // Strings returned from this method are not expected to have newlines at the end of the string, but in the middle of the string is fine.
+    public String toString()
+    {
+    	String result = "No policy";
+    	
+    	if ( isActive() )
+    	{
+    		result = "Date: " + dateString();
+    	}
+    	
+    	return result;
+    }
+    
+    // Given a string, return an array of strings broken down by the
+	// delimiter.
+	public static String[] fieldStrings( String fieldLine )
+	{
+	    return fieldLine.split( FIELD_DELIMITER );
+	}
+
+	// interposeFields
     //
     // Takes the array returned from the policyFields method and returns
     // a string with the FIELD_DELIMITER interposed between those

@@ -29,7 +29,7 @@ public class PolicyDate {
 
     // Constants
     // Value that represents "No Date", hence no policy.
-    public static final int NULL_DATE = 0;
+    private static final int NULL_DATE = 0;
 
     // Constructors
     public PolicyDate( String dateToParse )

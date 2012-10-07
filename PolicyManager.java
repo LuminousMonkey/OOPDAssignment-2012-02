@@ -34,14 +34,14 @@ class PolicyManager
         // The menu will show slightly different text if adding a new
         // policy holder will create the file instead of appending to an
         // existing file.
-        displayMenu( !insurances.creatingFile() );
+        displayMenu( insurances.fileExists() );
 
         char menuSelected = menuSelection();
 
         while ( menuSelected != QUIT_KEY )
             {
                 processMenuOption( menuSelected, insurances );
-                displayMenu( !insurances.creatingFile() );
+                displayMenu( insurances.fileExists() );
                 menuSelected = menuSelection();
             }
 
@@ -175,11 +175,11 @@ class PolicyManager
                 // insurance details.
                 holderToAdd.promptForInsurances();
 
-                System.out.println( "PH: " + holderToAdd );
-
                 // We should now have all the details we need. Write the
                 // policy holder to the file.
                 insurances.writeHolderToFile( holderToAdd );
+                
+                System.out.println( "Policy holder added to file." );
             }
         else {
             System.out.println( "Policy holder already exists in file." );
@@ -227,6 +227,7 @@ class PolicyManager
 
         PolicyHolder policyHolderFromUser = null;
 
+        // We only ask for the phone number if we're adding a new policy holder, it's not needed for searching policy holders.
         if ( addingOrSearching == AddOrSearch.ADDING_HOLDER )
             {
                 String phoneNumber = ConsoleInput.readLine( "Phone Number" );

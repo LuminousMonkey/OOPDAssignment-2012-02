@@ -42,7 +42,7 @@ public class TravelPolicy extends Policy
     }
 
     // Alternate Constructor
-    public TravelPolicy( PolicyDate date, String policyCountry )
+    private TravelPolicy( PolicyDate date, String policyCountry )
     {
         setDate( date );
         setCountry( policyCountry );
@@ -52,7 +52,7 @@ public class TravelPolicy extends Policy
     // a matching home policy file.
     public TravelPolicy( String inFileLine )
     {
-        String[] fields = Utility.fieldStrings( inFileLine );
+        String[] fields = Policy.fieldStrings( inFileLine );
 
         setDate( fields[DATE_FIELD] );
 
@@ -72,13 +72,13 @@ public class TravelPolicy extends Policy
     // out to the user.
     public String toString()
     {
-        String result = "No policy";
+        String result = super.toString();
 
         // If the policy is active, then give all the details, otherwise
         // just indicate the policy is not active.
-        if ( !isInactive() )
+        if ( isActive() )
             {
-                result = "Date: " + dateString() + "\n" +
+                result += "\n" +
                     "Country: " + policyCountry + "\n" +
                     "Premium: " + calculatePremium();
             }

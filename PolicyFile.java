@@ -7,7 +7,7 @@
 // REFERENCE: None.
 // COMMENTS:  None.
 // REQUIRES:  None.
-// Last Mod:  16th September 2012
+// Last Mod:  7th October 2012
 
 public class PolicyFile
 {
@@ -18,33 +18,8 @@ public class PolicyFile
     private static final String WRITE_MODE = "w";
     private static final String APPEND_MODE = "a";
 
-    // Our error codes in case we have some problems with
-    // reading/writing to policy files.
-    public enum FileError
-    {
-        NO_ERROR,               // What it says on the packet, we
-                                // haven't had any errors.
-
-        // Since the TextFile class doesn't explicitly allow us to test
-        // for the existence of a file (files may exist, but we can't
-        // read or write to them) there is little real difference
-        // between EXISTS and READ errors. However, they remain here for
-        // completeness and for the possibility of update in the future.
-        EXISTS,
-        READ,
-        WRITE,                  // Write error, if we get this error,
-                                // it's possible that we can read the
-                                // file, or the file exists but we just
-                                // can't write to it.
-
-        POLICY_EXISTS           // Policy holder already exists in the
-                                // file, duplicates are not allowed.
-
-    }
-
     // Name of the policy file that we want to read/write/append to.
     private String filename = "";
-    private FileError fileError = FileError.NO_ERROR;
 
     // Assume that we're creating a new file when we write, this should
     // be updated to APPEND_MODE if the file already exists.
@@ -63,7 +38,7 @@ public class PolicyFile
     public PolicyFile( String inFilename )
     {
         filename = inFilename;
-        if ( fileExists( inFilename ) )
+        if ( testForFile( inFilename ) )
             {
                 // If the file exists, then if we ever write to it,
                 // we're appending.
@@ -76,7 +51,7 @@ public class PolicyFile
     //
     // This is an explicit test, give a filename, get a result back,
     // does not keep any instances around.
-    private static boolean fileExists( String filename )
+    private static boolean testForFile( String filename )
     {
         TextFile fileTest = new TextFile( filename, READ_MODE );
 
@@ -96,17 +71,9 @@ public class PolicyFile
     // creatingFile
 
     // Returns true if we're creating a new file, otherwise false.
-    public boolean creatingFile()
+    public boolean fileExists()
     {
-        return ( writeMode.equals( WRITE_MODE ) );
-    }
-
-    // Opens the file for reading, expecting to use readLine to try and
-    // read the file.
-    public boolean readFile()
-    {
-        fileOfPolicies = new TextFile( filename, READ_MODE );
-        return fileOfPolicies.openFile();
+        return ( !writeMode.equals( WRITE_MODE ) );
     }
 
     // Read line
@@ -119,7 +86,7 @@ public class PolicyFile
     //
     // It assumes that the file is already opened, it will just return
     // an empty string if there's nothing left, or end of file, etc.
-    public String readLine()
+    private String readLine()
     {
         String result = "";
         boolean newLineFound = false;
@@ -210,14 +177,6 @@ public class PolicyFile
         return currentFilePolicyHolder;
     }
 
-    // Find a policy holder just via name and address, which as per
-    // assignment spec is the only thing that matters.
-    public PolicyHolder findHolder( String inName, String inAddress )
-    {
-        PolicyHolder searchFor = new PolicyHolder( inName, inAddress, "" );
-        return findHolder( searchFor );
-    }
-
     // Given a single policy holder, write that policy holder to the
     // given file, will check that the policy holder doesn't already
     // exist in the file already.
@@ -240,6 +199,11 @@ public class PolicyFile
                 // Check that the policy holder we've got isn't already
                 // in the file.
                 fileToWriteTo.printIt( policyHolderEntry( inHolder ) );
+                
+                // We do no error checking to keep the assignment simple
+                // assume it saved, and make sure we switch the file to
+                // append mode now.
+                writeMode = APPEND_MODE;
             }
 
         // We don't need to worry about checking if the file was open or
@@ -252,7 +216,7 @@ public class PolicyFile
     // Policy holder entry This returns the string of how the given
     // entry will be saved into the file, we put it here because the
     // file format is part of how policy files are managed.
-    public static String policyHolderEntry( PolicyHolder inPolicyHolder )
+    private static String policyHolderEntry( PolicyHolder inPolicyHolder )
     {
         return inPolicyHolder.fileString() + "\n" +
             inPolicyHolder.getHomeInsurance().fileString() + "\n" +
@@ -260,29 +224,9 @@ public class PolicyFile
             inPolicyHolder.getTravelInsurance().fileString() + "\n";
     }
 
-    // Return a human readable error string.
-    private String errorMessage()
-    {
-        String result = "Undefined Error";
-        switch( fileError )
-            {
-            case NO_ERROR:
-                result = "No error";
-                break;
-            case READ:
-                result = "Read error";
-                break;
-            case WRITE:
-                result = "Write error";
-                break;
-            }
-
-        return result;
-    }
-
     // Our toString function.
     public String toString()
     {
-        return "Filename: " + filename + " Error: " + errorMessage();
+        return "Filename: " + filename + " File Exists: " + fileExists();
     }
 }

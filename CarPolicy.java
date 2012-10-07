@@ -47,7 +47,7 @@ public class CarPolicy extends Policy
     }
 
     // Alternate Constructor
-    public CarPolicy( PolicyDate date, String make, String model, int year )
+    private CarPolicy( PolicyDate date, String make, String model, int year )
     {
         // Assume the fields are correct for now.
         setDate( date );
@@ -64,7 +64,7 @@ public class CarPolicy extends Policy
         // toString function.
 
         // Break down the string into substrings based on the field seperator.
-        String[] fields = Utility.fieldStrings( inFileLine );
+        String[] fields = Policy.fieldStrings( inFileLine );
 
         // Fields are all hardcoded.  Date field should always be
         // present, however if it's the only field, then don't bother
@@ -102,11 +102,11 @@ public class CarPolicy extends Policy
     // the user.
     public String toString()
     {
-        String result = "No policy";
+        String result = super.toString();
 
-        if ( !isInactive() )
+        if ( isActive() )
             {
-                return "Date: " + dateString() + "\n" +
+                result += "\n" +
                     "Make: " + carMake + "\n" +
                     "Model: " + carModel + "\n" +
                     "Year: " + manufactureYear + "\n" +
