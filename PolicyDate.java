@@ -31,6 +31,9 @@ public class PolicyDate {
     // Assume we have a null date until it gets set.
     private boolean dateIsNull = true;
 
+
+
+
     // Default Constructor
     // PURPOSE: Default creation of date, date will be marked as invalid.
     // IMPORTS: None.
@@ -42,6 +45,8 @@ public class PolicyDate {
         // Everything should already be set to the correct values in the
         // field declarations above.
     }
+
+
 
 
     // Alternate Constructor
@@ -91,6 +96,7 @@ public class PolicyDate {
     //          Does no range checking on the integer outside date checking.
     //          Bit of double handing, as we're converting to string, then to
     //          integer again.
+
     public PolicyDate( int dateFromInt )
     {
         // It's a bit weird, we're moving int to string to int.
@@ -131,12 +137,9 @@ public class PolicyDate {
 
 
     // NAME: toString
-
     // PURPOSE: Return the date as a string, output format is the same
     //          as the expected input format.  yyyyDDmm
-
     // IMPORT: None.
-
     // EXPORT: String that represents the date.
     // REMARKS: None.
 
@@ -156,13 +159,7 @@ public class PolicyDate {
 
 
 
-    // Prompt for date
-
-    // Prompt the user for the date, accept only valid dates, or 0.
-    // Otherwise keep asking, return a policy date instance.
-
     // NAME: promptForDate
-
     // PURPOSE: Prompt the user for a date, keep requesting until we get
     //          "0", or a valid date.
     // INPUT:   inDate - Date string from user.
@@ -172,6 +169,7 @@ public class PolicyDate {
     //          null date from the user.
     // Assertions
     //     Post: A valid PolicyDate object, or explictily entered null date.
+
     public static PolicyDate promptForDate()
     {
         PolicyDate inDate = null;
@@ -191,11 +189,17 @@ public class PolicyDate {
 
 
 
-    // The equals method for comparing two dates,
+    // NAME:    equals
+    // PURPOSE: To compare two PolicyDate instances for equality.
+    // IMPORTS: inObj - Java object we want to compare to.
+    // EXPORT:  boolean, true if they are equal.
+
     @Override public boolean equals( Object inObj )
     {
         boolean result = true;
 
+        // Handle if we get handed in null, or completely different
+        // classes.
         if ( !(inObj instanceof PolicyDate) )
             {
                 result = false;

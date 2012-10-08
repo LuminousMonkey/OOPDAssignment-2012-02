@@ -2,12 +2,12 @@
 // AUTHOR:    Mike Aldred
 // UNIT:      ST151
 // PURPOSE:   For handling reading and writing to the policy
-//            file. Anything to do with reading and writing to the file, should be
-//            here.
+//            file. Anything to do with reading and writing to the file,
+//            should be here.
 // REFERENCE: None.
 // COMMENTS:  None.
-// REQUIRES:  None.
-// Last Mod:  7th October 2012
+// REQUIRES:  TextFile class provided for assignment.
+// Last Mod:  8th October 2012
 
 public class PolicyFile
 {
@@ -25,19 +25,17 @@ public class PolicyFile
     // be updated to APPEND_MODE if the file already exists.
     private String writeMode = WRITE_MODE;
 
-    // Our handle on the TextFile class.
-    private TextFile fileOfPolicies = null;
-
-    // Default constructor
+     // Default constructor
     //
     // PURPOSE: Takes a file name, and tests if the file exists, if it
     //          does, then it makes sure we're in append mode.
-    // IMPORT: inFilename - A string that represents the filename of the
-    //         file.
-    // EXPORT: PolicyFile class, set into append mode if the file
-    //         exists, otherwise any write to the file will create it.
+    // IMPORT:  inFilename - A string that represents the filename of the
+    //          file.
+    // EXPORT:  PolicyFile class, set into append mode if the file
+    //          exists, otherwise any write to the file will create it.
     // REMARKS: There is no need for a "blank" default constructor, file
     //          operations always need a filename.
+
     public PolicyFile( String inFilename )
     {
         filename = inFilename;
@@ -87,7 +85,7 @@ public class PolicyFile
         // loop through each entry, comparing with the policy holder
         // we've been given, a match means that the policy holder exists
         // in the file.
-        fileOfPolicies = new TextFile( filename, READ_MODE );
+        TextFile fileOfPolicies = new TextFile( filename, READ_MODE );
         PolicyHolder currentFilePolicyHolder = new PolicyHolder();
 
         boolean matchFound = false;
@@ -106,7 +104,8 @@ public class PolicyFile
                         // given holder we're searching for, unless the
                         // user added in blank data. So that will give a
                         // false positive.
-                        currentFilePolicyHolder = new PolicyHolder( readLine() );
+                        currentFilePolicyHolder =
+                            new PolicyHolder( readLine( fileOfPolicies) );
 
                         matchFound = inHolder.equals( currentFilePolicyHolder );
                     }
@@ -118,9 +117,9 @@ public class PolicyFile
         // concerned, policy holder does it all.
         if ( matchFound )
             {
-                currentFilePolicyHolder.setHomePolicy( readLine() );
-                currentFilePolicyHolder.setCarPolicy( readLine() );
-                currentFilePolicyHolder.setTravelPolicy( readLine() );
+                currentFilePolicyHolder.setHomePolicy( readLine( fileOfPolicies) );
+                currentFilePolicyHolder.setCarPolicy( readLine( fileOfPolicies) );
+                currentFilePolicyHolder.setTravelPolicy( readLine( fileOfPolicies) );
             }
         else
             {
@@ -133,34 +132,34 @@ public class PolicyFile
         // if the file opened.
         fileOfPolicies.closeFile();
 
-        // Be sure to clear off our file handle.
-        fileOfPolicies = null;
-
         return currentFilePolicyHolder;
     }
 
-    // Given a single policy holder, write that policy holder to the
-    // given file, will check that the policy holder doesn't already
-    // exist in the file already.
-    public boolean writeHolderToFile( PolicyHolder inHolder )
-    {
-        // First, we check that the policy holder we have isn't already
-        // in the file, if they are, then we need to return false and
-        // set the error field so the correct message can be returned to
-        // the user.
+    // NAME: writeHolder
 
+    // PURPOSE: Given a PolicyHolder, writes the holder to the file,
+    //          either appending or creating the file as necessary.
+    // OUTPUT:  Writes the policy holder out to file if successful.
+    // IMPORT:  inHolder - PolicyHolder to write.
+    // EXPORT:  None.
+    // REMARKS: Assumes that the save is always going to work.
+    //          Doesn't check if polcy holder already exists in the
+    //          file, that is expected to be done before this method is
+    //          called.
+
+    public void writeHolder( PolicyHolder inHolder )
+    {
         // We don't actually keep the file handle open all
         // the time, we only open it for when we need it.
 
         TextFile fileToWriteTo = new TextFile( filename, writeMode );
 
-        boolean result = false;
         if ( fileToWriteTo.openFile() )
             {
                 // We have managed to open the file in a writeable mode.
                 // Check that the policy holder we've got isn't already
                 // in the file.
-                fileToWriteTo.printIt( policyHolderEntry( inHolder ) );
+                fileToWriteTo.printIt( inHolder.fileString() );
 
                 // We do no error checking to keep the assignment simple
                 // assume it saved, and make sure we switch the file to
@@ -171,8 +170,23 @@ public class PolicyFile
         // We don't need to worry about checking if the file was open or
         // not, as that is taken care of in the TextFile class.
         fileToWriteTo.closeFile();
+    }
 
-        return result;
+
+
+
+
+    // NAME: toString
+    // PURPOSE: Very simple method, just shows filename and the
+    //          fileExists value.
+    // IMPORT: None.
+    // EXPORT: String that represents the date.
+    // REMARKS: None.
+
+    public String toString()
+    {
+        return "Filename: " + filename + " File Exists: " +
+            fileExists();
     }
 
 
@@ -182,7 +196,7 @@ public class PolicyFile
     // PURPOSE: Read a single line from the text file including the
     //          terminating newline.
     // INPUT:   Read line from file.
-    // IMPORT:  None.
+    // IMPORT:  File to read from.
     // EXPORT:  A string of the line that was read, does not include the
     //          terminating newline character.
     //          String will be empty if there's nothing more to read.
@@ -190,7 +204,7 @@ public class PolicyFile
     //     Pre: openFile() method has been called and was successful.
     // REMARKS: All our read operations are done through this, doesn't
     //          handle any read errors.
-    private String readLine()
+    private String readLine( TextFile fileOfPolicies )
     {
         String result = "";
         boolean newLineFound = false;
@@ -216,11 +230,16 @@ public class PolicyFile
         return result;
     }
 
-    // Tests that a file exists already, returns true if the file is
-    // available for reading (writing may not work), otherwise false.
-    //
-    // This is an explicit test, give a filename, get a result back,
-    // does not keep any instances around.
+
+
+
+    // NAME:    testForFile
+    // PURPOSE: Just tests if file with the given name can be read.
+    // IMPORT:  filename - String, name of file we're looking for.
+    // EXPORT:  Boolean, returns true if the file was readable.
+    // REMARKS: Doesn't do a comprehensive test, writing might not work,
+    //          etc.
+
     private static boolean testForFile( String filename )
     {
         TextFile fileTest = new TextFile( filename, READ_MODE );
@@ -236,22 +255,5 @@ public class PolicyFile
         fileTest.closeFile();
 
         return result;
-    }
-
-    // Policy holder entry This returns the string of how the given
-    // entry will be saved into the file, we put it here because the
-    // file format is part of how policy files are managed.
-    private static String policyHolderEntry( PolicyHolder inPolicyHolder )
-    {
-        return inPolicyHolder.fileString() + "\n" +
-            inPolicyHolder.getHomeInsurance().fileString() + "\n" +
-            inPolicyHolder.getCarInsurance().fileString() + "\n" +
-            inPolicyHolder.getTravelInsurance().fileString() + "\n";
-    }
-
-    // Our toString function.
-    public String toString()
-    {
-        return "Filename: " + filename + " File Exists: " + fileExists();
     }
 }

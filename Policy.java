@@ -263,17 +263,18 @@ public abstract class Policy
 
 
     // NAME:    premiumString
-
     // PURPOSE: Returns the premium of the policy formatted as a string.
-
     // IMPORTS: None.
-
     // EXPORTS: A string, in dollars with currency sign and decimal places.
     // REMARKS: None.
+
     public String premiumString()
     {
         return String.format( CURRENCY_SYMBOL + "%.2f", this.calculatePremium() );
     }
+
+
+
 
     // NAME: fieldStrings
 

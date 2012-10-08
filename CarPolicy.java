@@ -211,9 +211,10 @@ public class CarPolicy extends Policy
 
 
 
+
     // NAME:    equals
     // PURPOSE: To compare two CarPolicy instances for equality.
-    // IMPORTS: inCarPolicy - CarPolicy we want to compare to.
+    // IMPORTS: inObj - Java object we want to compare to.
     // EXPORT:  boolean, true if they are equal.
 
     @Override public boolean equals( Object inObj )

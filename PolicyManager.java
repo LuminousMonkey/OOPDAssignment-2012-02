@@ -151,7 +151,10 @@ class PolicyManager
                 break;
             case VIEW_HOLDER_KEY:
                viewPolicyHolder( insurances );
-                break;
+               break;
+            default:
+                // We should never, reach here.
+                assert false;
             }
     }
 
@@ -177,8 +180,8 @@ class PolicyManager
 
                 // We should now have all the details we need. Write the
                 // policy holder to the file.
-                insurances.writeHolderToFile( holderToAdd );
-                
+                insurances.writeHolder( holderToAdd );
+
                 System.out.println( "Policy holder added to file." );
             }
         else {

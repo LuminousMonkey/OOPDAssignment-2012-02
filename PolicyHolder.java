@@ -152,7 +152,10 @@ public class PolicyHolder
     // should be saved to in the file.
     public String fileString()
     {
-        return name + "," + address + "(" + phoneNumber + ")";
+        return name + "," + address + "(" + phoneNumber + ")" +
+            homeInsurance.fileString() + "\n" +
+            carInsurance.fileString() + "\n" +
+            travelInsurance.fileString();
     }
 
     // Returns the policy as a string, will have the field names, etc,

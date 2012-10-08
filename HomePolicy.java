@@ -6,7 +6,7 @@
 // REFERENCE: None.
 // COMMENTS:  None.
 // REQUIRES:  None.
-// Last Mod:  11th September 2012
+// Last Mod:  8th October 2012
 
 import io.ConsoleInput;
 
@@ -58,6 +58,9 @@ public class HomePolicy extends Policy
         super();
     }
 
+
+
+
     // Copy constructor
     // PURPOSE: Takes a HomePolicy instance and returns a seperate copy
     //          of that instance.
@@ -100,6 +103,9 @@ public class HomePolicy extends Policy
                 setNumberOfStories( Integer.parseInt( fields[STORIES_FIELD] ) );
             }
     }
+
+
+
 
     // Alternate Constructor
     // PURPOSE:    This constructor is used when we're reading in data from
@@ -153,6 +159,9 @@ public class HomePolicy extends Policy
 
         return result;
     }
+
+
+
 
     // Setters
     public void setPostCode( int newPostCode )
