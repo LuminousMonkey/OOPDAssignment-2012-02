@@ -1,0 +1,58 @@
+ABSTRACT CLASS Policy
+Class Fields: date (PolicyDate)
+Class Constants:
+  FIELD_DELIMITER = ":"
+  CURRENCY_SYMBOL = "$"
+  DATE_FIELD = 0
+
+Default constructor IMPORT None
+
+Protected Alternate constructor
+IMPORT inFileLine
+CALL fieldStrings<-inFileLine ->fields
+date = PolicyDate<-fields[DATE_FIELD]
+
+Protected setDate IMPORT dateToParse (String)
+date = PolicyDate<-dateToParse
+
+Protected setDate IMPORT inDate (PolicyDate)
+date = PolicyDate<-inDate
+
+Protected Accessor dateString IMPORT None EXPORT date.toString
+
+Protected Accessor isInactive IMPORT None EXPORT date.isNullDate
+
+Protected Accessor isActive IMPORT None EXPORT !isInactive
+
+Abstract Accessor calculatePremium IMPORT None EXPORT premium
+
+Protected Abstract Accessor policyFields IMPORT None EXPORT fields
+
+Accessor fileString IMPORT None EXPORT stringFields
+stringFields = policyFields
+IF isInactive
+  Make string fields only have dateString value
+ENDIF
+
+stringFields = interposeFields<-stringFields
+
+Accessor toString IMPORT None EXPORT resultString
+resultString = No Policy
+IF isActive
+  resultString = dateString
+ENDIF
+
+Accessor premiumString IMPORT None EXPORT resultString
+  resultString = CURRENCY_SYMBOL + calculatePremium
+
+SUBMODULE fieldStrings
+IMPORT fieldLine
+EXPORT fieldsAsStrings
+fieldsAsStrings = fieldLine split by FIELD_DELIMITER
+
+Private SUBMODULE interpostFields
+IMPORT fieldsAsStrings
+EXPORT fileLine
+FOR EACH field in fieldsAsStrings
+  fileLine = fileLine + field + FIELD_DELIMITER
+ENDFOR

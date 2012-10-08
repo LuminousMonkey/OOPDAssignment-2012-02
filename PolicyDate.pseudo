@@ -1,0 +1,40 @@
+CLASS PolicyDate
+Class Fields: dateOfPolicy.
+Class Constants: NULL_DATE = 0
+
+Default Constructor IMPORT None
+Construct dateOfPolicy using default
+
+Alternate Constructor IMPORT dateToParse
+IF dateToParse = NULL_DATE
+  dateOfPolicy = NULL_DATE
+ELSE
+  dateOfPolicy = dateToParse
+ENDIF
+
+Copy Constructor IMPORT inDate
+dateOfPolicy = inDate
+
+Accessor isNullDate IMPORT None EXPORT (dateOfPolicy = NULL_DATE)
+
+Accessor toString IMPORT None EXPORT dateString
+dateString = dateOfPolicy
+
+Accessor equals IMPORT inPolicyDate (PolicyDate) EXPORT result
+result = true
+IF dateOfPolicy.equals<--inPolicyDate.dateOfPolicy
+  result = true
+ELSE
+  result = false
+ENDIF
+
+SUBMODULE promptForDate
+IMPORT None
+EXPORT inDate (PolicyDate)
+
+DO
+  Prompt user to enter date, or 0 for no date.
+  INPUT dateFromUser
+  Construct inDate from dateFormUser
+WHILE inDate is not valid && dateFromUser not equal 0
+END SUBMODULE
