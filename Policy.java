@@ -6,7 +6,7 @@
 // REFERENCE: None.
 // COMMENTS:  None.
 // REQUIRES:  None.
-// Last Mod:  7th October 2012
+// Last Mod:  8th October 2012
 
 public abstract class Policy
 {
@@ -18,104 +18,205 @@ public abstract class Policy
     // Variables
     private PolicyDate date = new PolicyDate();
 
-    // Default constructor
+    // Default Constructor
+    // PURPOSE: Default creation for any inactive policy.
+    // IMPORTS: None.
+    // EXPORT:  A policy object that is inactive, i.e. with no date set.
+    // REMARKS: This is expected to be called by all subclasses, as the
+    //          policy class handles any date handling.
+
     protected Policy()
     {
-        // By default a blank policy will have be Inactive
+        // By default a blank policy will have be inactive.
         setInactive();
     }
 
-    // All policies must have a date, hence the policy interface must
-    // have a way of having a date set.
+
+
+
+    // NAME:    setDate
+    // PURPOSE: Takes a string that represents the date and sets the
+    //          date for the policy to that date.
+    // IMPORTS: String in the format that the PolicyDate class expects
+    //          YYYYMMDD
+    // EXPORTS: None.
+    // REMARKS: If the date is invalid, then the date (hence the policy)
+    //          will be marked as inactive.
+
     protected void setDate( String dateToParse )
     {
         date = new PolicyDate( dateToParse );
     }
+
+
+
+
+    // NAME:    setDate
+    // PURPOSE: Takes a PolicyDate instance and sets the date of the
+    //          policy to the given date.
+    // IMPORTS: PolicyDate instance to update policy to.
+    // EXPORTS: None.
+    // REMARKS: If the date is invalid, then the date (hence the policy)
+    //          will be marked as inactive.
 
     protected void setDate( PolicyDate inDate )
     {
         date = new PolicyDate( inDate );
     }
 
-    // Accessors Returns the date as a string, the format will match the
-    // format that should be expected in the text file.
-    protected String dateString()
-    {
-        String result = Integer.toString( PolicyDate.NULL_DATE );
 
-        if ( date != null )
-            {
-                result = date.toString();
-            }
 
-        return result;
-    }
 
-    // setInactive
-    //
-    // A policy might not be active, this method is to be called if the
-    // policy isn't active, otherwise a valid date for the policy must
-    // be provided.
+    // NAME:    setInactive
+    // PURPOSE: Sets the policy to an inactive state, this means all
+    //          other fields should be ignored.
+    // IMPORTS: None.
+    // EXPORTS: None.
+    // REMARKS: Just creates a new PolicyDate, which should be a null
+    //          date by default. Since dates define if a policy is active
+    //          or not, this makes the policy inactive.
+
     protected void setInactive()
     {
-        date = null;
+        date = new PolicyDate();
     }
 
-    // isInactive
 
-    // Returns true if the policy is inactive.
+
+
+    // NAME:    dateString
+    // PURPOSE: Returns the date of the policy in the format as defined
+    //          in the assignment spec. YYYYMMDD.
+    // IMPORTS: None.
+    // EXPORTS: String in the format YYYYMMDD.
+    // REMARKS: None.
+
+    protected String dateString()
+    {
+        return date.toString();
+    }
+
+
+
+
+    // NAME:    isInactive
+    // PURPOSE: What it says on the packet, returns true if the policy
+    //          isn't active (hasn't got a date set).
+    // IMPORTS: None.
+    // EXPORTS: Boolean, true is policy is not active, false otherwise.
+    // REMARKS: None.
+
     protected boolean isInactive()
     {
         return ( date.isNullDate() );
     }
 
-    // Just a straight inversion of isInactive, created just so statements read better.
+
+
+
+    // NAME:    isActive
+    // PURPOSE: Returns true if the policy is active (has a date).
+    // IMPORTS: None.
+    // EXPORTS: Boolean, true if policy is active.
+    // REMARKS: Just a convience method, makes code a tiny bit easier to
+    //          read than !isInactive()
+
     protected boolean isActive()
     {
         return !isInactive();
     }
 
-    // All insurance policies must have a premium that must be
-    // calculated, the premium calculation may depend on details in the
-    // poilcy, so if this method is called before policy information is
-    // set, it must return a null value.
+
+
+
+    // NAME:    calculatePremium
+    // PURPOSE: All policies must have a premium, but the calculation of
+    //          such a premium is done on a class by class basis.
+    // IMPORTS: None.
+    // EXPORTS: A double representing the amount of the premium in dollars.
+    // REMARKS: This method should return a result, even if the other
+    //          values for calculating the premium aren't valid, it can
+    //          be an invalid value, but shouldn't crash on weird object
+    //          states.
+    //          Also, this method does no rounding, it's up to the caller
+    //          to round to any necessary number of decimal places, etc.
+
     public abstract double calculatePremium();
 
-    // Since each policy has potentially different formats for the
-    // string that is saved to the text file, we need a general way to
-    // represent what fields should be output. So, each class needs to
-    // have this method. When called, it returns a String array of the
-    // fields, in the order they need to be saved in the file.
+
+
+
+    // NAME:    policyFields
+    // PURPOSE: Each policy has a shared requirement to save a line
+    //          format to a file. To reduce coupling we use the
+    //          fileString() method to produce a string for saving
+    //          the policy to file. Each policy have different fields
+    //          and order which they have to be saved. This method is
+    //          a way of getting each class to communicate the fields
+    //          that have to be saved, and the order so we can have
+    //          one method that generates the line for all classes. See
+    //          fileString() for more details.
+    // IMPORTS: None.
+    // EXPORTS: A string array of the field values in the order they
+    //          should be saved in the file.
+    //
+    // REMARKS: Reduces the need for PolicyFile to know about fields and
+    //          their order that they have to be saved in the file. But
+    //          implies that each policy must know their format in the file,
+    //          rather than the order of the fields being defined in the
+    //          class that actually takes care of the file.
+
     protected abstract String[] policyFields();
 
-    // Each policy should provide a method that returns a string that
-    // can be used to show the policy details to the user.
+
+
+
+    // NAME:    fileString
+    // PURPOSE: Returns the single line string that represents the
+    //          policy in the text file.
+    // IMPORTS: None through parameters, but expects a policyFields()
+    //          method that returns an array of the field values in order
+    //          they are to be saved in the file.
+    // EXPORTS: A string, that represents the policy in a single line as
+    //          defined in the assignment spec. Not to be newline terminated.
+    // REMARKS: Check the comments on policyFields();
+
     public String fileString()
     {
-        // This one method covers outputting the policy fields to the
-        // line format expected in the text file, interposeFields takes
-        // an array of strings and returns a string with the delimiter
-        // between each of the string values, and terminated by a
-        // delimiter.
+        // Get our field values and order they should be.
         String[] stringFields = this.policyFields();
 
-        // If the date is null, then we don't have any fields except the
-        // null date.
-        if ( isInactive() )
+        // If the policy is inactive, then all we are going to do is
+        // output the date (which will be just "0").
+        if ( this.isInactive() )
             {
-                // If the policy isn't active (a date of 0), then all we
-                // need to do is have the date field.
+                // We just create a new array, with the single field of
+                // the date.
                 stringFields = new String[1];
                 stringFields[0] = this.dateString();
             }
 
-        return interposeFields( stringFields );
+        // Fields require a delimiter character between them, interpose
+        // that delimiter between the fields.
+        return this.interposeFields( stringFields );
     };
 
-    // At the most basic level, a policy just has a date, if there is no
-    // date, there is no policy.  Strings returned from this method are
-    // not expected to have newlines at the end of the string, but in
-    // the middle of the string is fine.
+
+
+
+    // NAME:    toString
+    // PURPOSE: Return a string in human readable format of the policy.
+    // IMPORTS: None.
+    // EXPORTS: A string, human readable, possibly with multiple
+    //          newlines.
+    // REMARKS: The date is common to all policies, so makes sense to
+    //          have the string handling for it here. Since the date
+    //          defines if a policy is active or not, we have a
+    //          "No Policy" string that will be returned.
+    //          However! Each subclass still needs to check to see
+    //          if the policy is active before trying to add anymore
+    //          fields to the string.
+
     public String toString()
     {
         String result = "No policy";
@@ -128,28 +229,43 @@ public abstract class Policy
         return result;
     }
 
-    // Given a string, return an array of strings broken down by the
-    // delimiter.
+
+
+
+    // NAME: fieldStrings
+
+    // PURPOSE: Given a single line string of policy field values, split
+    //          the string into an array of the seperate fields.
+    // IMPORT:  A string of the policy as defined in the assignment spec.
+    // EXPORT:  An array of strings, each value in the array representing
+    //          a single field as defined in the assignment spec.
+    // REMARKS: No error checking or verification, anything weird you
+    //          pass in is your own problem.
     public static String[] fieldStrings( String fieldLine )
     {
         return fieldLine.split( FIELD_DELIMITER );
     }
 
-    // interposeFields
-    //
-    // Takes the array returned from the policyFields method and returns
-    // a string with the FIELD_DELIMITER interposed between those
-    // fields. The end result being a string that is in the format
-    // expected for saving a policy line to the file.
+
+
+
+    // NAME:    interposeFields
+    // PURPOSE: Creates a single line string for saving a policy to the
+    //          file.
+    // IMPORTS: An array of strings that represent the field values to
+    //          be saved to the file. Must be in order expected for file, as
+    //          defined by assignment spec.
+    // EXPORTS: Single string, of field values with delimiter interposed
+    //          between, and at end of string. Not newline terminated.
+    // REMARKS: None.
+
     private static String interposeFields( String[] fields )
     {
-        // Our result string, this is not the best way to make a string
-        // like this, but it's assumed we're not using lots of fields,
-        // otherwise use StringBuilder.
         String result = "";
 
         // For each field in the array, put the delimiter between the
         // fields.
+        // An srray for loop, like fezzes, are cool.
         for ( String field : fields )
             {
                 result += field + FIELD_DELIMITER;

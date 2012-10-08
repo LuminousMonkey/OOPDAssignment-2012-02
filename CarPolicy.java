@@ -22,6 +22,7 @@ public class CarPolicy extends Policy
 
     // Aging factor, this is a factor that is multiplied by the age of
     // the car as part of the premium calculations.
+    // Never make this value -1.0
     private static final double AGING_FACTOR = 0.2;
 
     // Fields
@@ -38,7 +39,12 @@ public class CarPolicy extends Policy
     // This should be updated if the number of fields above change.
     private static final int NUM_OF_FIELDS = 3;
 
-    // Default constructor
+    // Default Constructor
+    // PURPOSE: Default creation of inactive car policy.
+    // IMPORTS: None.
+    // EXPORT:  An instance of a car policy that is considered inactive.
+    // REMARKS: None.
+
     public CarPolicy()
     {
         // All our default values are set in the fields above, just call
@@ -46,22 +52,18 @@ public class CarPolicy extends Policy
         super();
     }
 
-    // Alternate Constructor
-    private CarPolicy( PolicyDate date, String make, String model, int year )
-    {
-        // Assume the fields are correct for now.
-        setDate( date );
-        setMake( make );
-        setModel( model );
-        setYear( year );
-    }
+
+
 
     // Alternate Constructor
-    //
-    // Takes a string, the string is expected to be in the format as
-    // defined in the assignment spec. It will ignore any extra fields
-    // on the line, and doesn't do any real error checking. Any weird
-    // formats in the fields it does expect may give weird behaviour.
+    // PURPOSE: This constructor is used when reading in the policy from
+    //          the file.
+    // IMPORTS: inFileLine - single line string of the policy as defined
+    //          in assignment spec.
+    // EXPORT:  An instance of a car policy, values defined by data read
+    //          from file.
+    // REMARKS: No error checking done.
+
     public CarPolicy( String inFileLine )
     {
         // Break down the string into substrings based on the field seperator.
@@ -77,90 +79,84 @@ public class CarPolicy extends Policy
         // we get more, then it's not so bad, we'll just ignore them.
         if ( fields.length >= NUM_OF_FIELDS )
             {
-                setMake( fields[MAKE_FIELD] );
-                setModel( fields[MODEL_FIELD] );
-                setYear( Integer.parseInt( fields[YEAR_FIELD] ) );
+                carMake = fields[MAKE_FIELD];
+                carModel = fields[MODEL_FIELD];
+                manufactureYear = Integer.parseInt( fields[YEAR_FIELD] );
             }
     }
 
-    // Setters
-    public void setMake( String make )
+
+
+
+    // Alternate Constructor
+    // PURPOSE:    This constructor is used when we're reading in data from
+    //             the user and we've confirmed that it's an active policy
+    //             and that the data is valid to the best of our ability.
+    // IMPORTS:    inDate  - Date of the policy.
+    //             inMake  - String of the make of the car.
+    //             inModel - String of the model of the car.
+    //             inYear  - Integer of the year of manufacture.
+    // EXPORTS:    CarPolicy instance with the given values set.
+    // Assertions:
+    //     Pre: date is not a null date, and is valid.
+    //          year is valid, can't after current year, or before 1770.
+    // REMARKS:    None.
+
+    private CarPolicy( PolicyDate inDate, String inMake, String inModel,
+                       int inYear )
     {
-        carMake = make;
+        setDate( date );
+        carMake = inMake;
+        carModel = inModel;
+        manufactureYear = inYear;
     }
 
-    public void setModel( String model )
-    {
-        carModel = model;
-    }
 
-    public void setYear( int year )
-    {
-        manufactureYear = year;
-    }
 
-    // Returns a string that can be used to display the policy out to
-    // the user.
-    public String toString()
-    {
-        // Build the initial string from our parent, the result should
-        // either be whatever the no policy text is, or the date of the
-        // policy.
-        String result = super.toString();
 
-        // We only output the remaining fields if the policy is active,
-        // otherwise it will just be whatever the parent class outputs.
-        if ( isActive() )
-            {
-                result += "\n" +
-                    "Make: " + carMake + "\n" +
-                    "Model: " + carModel + "\n" +
-                    "Year: " + manufactureYear + "\n" +
-                    "Premium: " + calculatePremium();
-            }
+    // NAME:    calculatePremium
+    // PURPOSE: Returns the premium amount in dollars.
+    // IMPORTS: None.
+    // EXPORTS: A double representing the amount of the premium in dollars.
+    // REMARKS: Check comments in Policy class.
 
-        return result;
-    }
-
-    // Returns a string array of the fields of this policy, in the order
-    // they should be in the text file. This is expected to be called by
-    // the fieldFields method of the parent, the Policy class.
-    //
-    // This was done so I didn't have to duplicate code in the three
-    // children classes, and that if the field delimiter changes, it
-    // just has to change in one place.
-    protected String[] policyFields()
-    {
-        String[] resultArray = { dateString(),
-                                 carMake,
-                                 carModel,
-                                 Integer.toString( manufactureYear ) };
-
-        return resultArray;
-    }
-
-    // Returns the premium of the car insurance following the formula
-    // outlined in the assignment.
     public double calculatePremium()
     {
         int carAge = Calendar.getInstance().get( Calendar.YEAR ) -
             manufactureYear;
-        return BASE_PREMIUM / ( 1 + AGING_FACTOR * carAge );
+        return BASE_PREMIUM / ( 1.0 + AGING_FACTOR * carAge );
     }
 
-    // Prompt the user for the car insurance details.
+
+
+
+    // NAME:    promptForInsurance
+
+    // PURPOSE: Prompts the user for the car insurance details, and
+    //          returns a CarPolicy instance that represents that data.
+    // INPUT:  date, make, model, year for policy.
+    // OUTPUT: Prompts for date, make, model, year.
+    // IMPORT: None.
+    // EXPORT: CarPolicy instance with values.
+    // Assertions:
+    //     Post: Either an inactive CarPolicy (no date set), or an active
+    //           CarPolicy with all fields set best we can.
+    // REMARKS: It's hard to say if it's really the right place for
+    //          this, as it's mixing Input/Output into a class that could
+    //          be more "pure". However, my argument is that the
+    //          PolicyManager class shouldn't really know the internals
+    //          of the policies too much, and that would include know what
+    //          fields to prompt the user for.
     //
-    // It's hard to say if it's really the right place for this, as it's
-    // mixing Input/Output into a class that could be more
-    // "pure". However, my argument is that the PolicyManager class
-    // shouldn't really know the internals of the policies too much, and
-    // that would include know what fields to prompt the user for.
+    //          However, if you really wanted to get rid of the coupling
+    //          to the ConsoleInput class and the prompts to the user,
+    //          etc, you would come up with a scheme where this class would
+    //          advertise the prompts, etc, basically come up with an
+    //          internal kind of protocol that represented inputs,
+    //          validation, etc, needed.
     //
-    // However, if you really wanted to get rid of the coupling to the
-    // ConsoleInput class and the prompts to the user, etc, you would
-    // come up with a scheme where this class would advertise the
-    // prompts, etc, basically come up with an internal kind of protocol
-    // that represented inputs, validation, etc, needed.
+    //          Not very much error checking going on, can't verify much.
+
     public static CarPolicy promptForInsurance()
     {
         PolicyDate date = PolicyDate.promptForDate();
@@ -177,5 +173,56 @@ public class CarPolicy extends Policy
             }
 
         return newPolicy;
+    }
+
+
+
+
+    // NAME:    toString
+    // PURPOSE: Return a string in human readable format of the policy.
+    // IMPORTS: None.
+    // EXPORTS: A string, human readable, possibly with multiple
+    //          newlines.
+    // REMARKS: Check the toString() comments in Policy class.
+
+    public String toString()
+    {
+        // Build the initial string from our parent, the result should
+        // either be whatever the no policy text is, or the date of the
+        // policy.
+        String result = super.toString();
+
+        // We only output the remaining fields if the policy is active,
+        // otherwise it will just be whatever the parent class outputs.
+        if ( this.isActive() )
+            {
+                result += "\n" +
+                    "Make: " + carMake + "\n" +
+                    "Model: " + carModel + "\n" +
+                    "Year: " + manufactureYear + "\n" +
+                    "Premium: " + String.format( "%f2", calculatePremium() );
+            }
+
+        return result;
+    }
+
+
+
+    // NAME:    policyFields
+    // PURPOSE: Return an array of strings that represent the policy
+    //          values for saving to file.
+    // IMPORTS: None.
+    // EXPORTS: A string array of the field values, in order they should
+    //          be in the text file.
+    // REMARKS: Check policyFields() comments in Policy class.
+
+    protected String[] policyFields()
+    {
+        String[] resultArray = { dateString(),
+                                 carMake,
+                                 carModel,
+                                 Integer.toString( manufactureYear ) };
+
+        return resultArray;
     }
 }
