@@ -174,7 +174,7 @@ public class PolicyHolder
         return name + "," + address + "(" + phoneNumber + ")" + "\n" +
             homeInsurance.fileString() + "\n" +
             carInsurance.fileString() + "\n" +
-            travelInsurance.fileString();
+            travelInsurance.fileString() + "\n";
     }
 
 
