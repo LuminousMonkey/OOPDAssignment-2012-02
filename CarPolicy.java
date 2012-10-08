@@ -13,8 +13,8 @@ import io.ConsoleInput;
 
 public class CarPolicy extends Policy
 {
-    // Constants Value that represents an invalid year for date of
-    // manufacture.
+    // Constants
+    // Value that represents an invalid year for date of manufacture.
     private static final int INVALID_YEAR = -1;
 
     // Base premium for calculation.
@@ -31,13 +31,15 @@ public class CarPolicy extends Policy
     private int manufactureYear = INVALID_YEAR;
 
     // Position of the fields in the policy file.
-    private static final int DATE_FIELD = 0;
     private static final int MAKE_FIELD = 1;
     private static final int MODEL_FIELD = 2;
     private static final int YEAR_FIELD = 3;
 
     // This should be updated if the number of fields above change.
-    private static final int NUM_OF_FIELDS = 3;
+    private static final int NUM_OF_FIELDS = YEAR_FIELD + 1;
+
+
+
 
     // Default Constructor
     // PURPOSE: Default creation of inactive car policy.
@@ -58,30 +60,27 @@ public class CarPolicy extends Policy
     // Alternate Constructor
     // PURPOSE: This constructor is used when reading in the policy from
     //          the file.
-    // IMPORTS: inFileLine - single line string of the policy as defined
+    // IMPORT:  inFileLine - single line string of the policy as defined
     //          in assignment spec.
     // EXPORT:  An instance of a car policy, values defined by data read
     //          from file.
-    // REMARKS: No error checking done.
+    // REMARKS: Tiny bit of code duplication I'm unsure how to remove
+    //          here.
 
     public CarPolicy( String inFileLine )
     {
-        // Break down the string into substrings based on the field seperator.
-        String[] fields = Policy.fieldStrings( inFileLine );
+        super( inFileLine );
 
-        // Fields are all hardcoded.  Date field should always be
-        // present, however if it's the only field, then don't bother
-        // setting any of the other field values, rely on the default
-        // values being set correctly.
-        setDate( fields[DATE_FIELD] );
+        // Break down the string into an array
+        String[] fields = Policy.fieldStrings( inFileLine );
 
         // Check that we have the number of fields we're expecting, if
         // we get more, then it's not so bad, we'll just ignore them.
         if ( fields.length >= NUM_OF_FIELDS )
             {
-                carMake = fields[MAKE_FIELD];
-                carModel = fields[MODEL_FIELD];
-                manufactureYear = Integer.parseInt( fields[YEAR_FIELD] );
+                this.carMake = fields[MAKE_FIELD];
+                this.carModel = fields[MODEL_FIELD];
+                this.manufactureYear = Integer.parseInt( fields[YEAR_FIELD] );
             }
     }
 
@@ -105,10 +104,10 @@ public class CarPolicy extends Policy
     private CarPolicy( PolicyDate inDate, String inMake, String inModel,
                        int inYear )
     {
-        setDate( date );
-        carMake = inMake;
-        carModel = inModel;
-        manufactureYear = inYear;
+        this.setDate( inDate );
+        this.carMake = inMake;
+        this.carModel = inModel;
+        this.manufactureYear = inYear;
     }
 
 
@@ -122,8 +121,12 @@ public class CarPolicy extends Policy
 
     public double calculatePremium()
     {
+        // Just the formula as per assignment spec.
+
+        // Get the age of the car, based off current year and year the
+        // car was made.
         int carAge = Calendar.getInstance().get( Calendar.YEAR ) -
-            manufactureYear;
+            this.manufactureYear;
         return BASE_PREMIUM / ( 1.0 + AGING_FACTOR * carAge );
     }
 
@@ -197,16 +200,43 @@ public class CarPolicy extends Policy
         if ( this.isActive() )
             {
                 result += "\n" +
-                    "Make: " + carMake + "\n" +
-                    "Model: " + carModel + "\n" +
-                    "Year: " + manufactureYear + "\n" +
-                    "Premium: " + String.format( "%f2", calculatePremium() );
+                    "Make: \t" + this.carMake + "\n" +
+                    "Model: \t" + this.carModel + "\n" +
+                    "Year: \t" + this.manufactureYear + "\n" +
+                    "Premium: " + this.premiumString();
             }
 
         return result;
     }
 
 
+
+    // NAME:    equals
+    // PURPOSE: To compare two CarPolicy instances for equality.
+    // IMPORTS: inCarPolicy - CarPolicy we want to compare to.
+    // EXPORT:  boolean, true if they are equal.
+
+    @Override public boolean equals( Object inObj )
+    {
+        boolean result = true;
+
+        // Handle if we get handed in null, or completely different
+        // classes.
+        if ( !(inObj instanceof CarPolicy) )
+            {
+                result = false;
+            }
+        else
+            {
+                CarPolicy testObject = (CarPolicy) inObj;
+                result = testObject.dateString().equals( this.dateString() ) &&
+                    testObject.carMake.equals( this.carMake ) &&
+                    testObject.carModel.equals( this.carModel ) &&
+                    testObject.manufactureYear == this.manufactureYear;
+            }
+
+        return result;
+    }
 
     // NAME:    policyFields
     // PURPOSE: Return an array of strings that represent the policy

@@ -24,16 +24,23 @@ public class TravelPolicy extends Policy
         "United States", "Russia" };
 
     // Position of the fields in the policy file.
-    private static final int DATE_FIELD = 0;
     private static final int COUNTRY_FIELD = 1;
 
     // This should be update if the number of fields above change.
-    private static final int NUM_OF_FIELDS = 2;
+    private static final int NUM_OF_FIELDS = COUNTRY_FIELD + 1;
 
     // Country that is covered under this policy.
     private String policyCountry = "";
 
-    // Default constructor
+
+
+
+    // Default Constructor
+    // PURPOSE: Default creation of inactive travel policy.
+    // IMPORTS: None.
+    // EXPORT:  An instance of a travel policy that is considered inactive.
+    // REMARKS: None.
+
     public TravelPolicy()
     {
         // All our default values are set in the fields above, just call
@@ -41,54 +48,64 @@ public class TravelPolicy extends Policy
         super();
     }
 
-    // Alternate Constructor
-    private TravelPolicy( PolicyDate date, String policyCountry )
-    {
-        setDate( date );
-        setCountry( policyCountry );
-    }
 
-    // Takes a single line from the policy file as a string and returns
-    // a matching home policy file.
+
+
+    // Alternate Constructor
+    // PURPOSE: This constructor is used when reading in the policy from
+    //          the file.
+    // IMPORTS: inFileLine - single line string of the policy as defined
+    //          in assignment spec.
+    // EXPORT:  An instance of a travel policy, values defined by data read
+    //          from file.
+    // REMARKS: Tiny bit of code duplication I'm unsure how to remove
+    //          here.
+
     public TravelPolicy( String inFileLine )
     {
+        super( inFileLine );
+
+        // Break down the string into an array
         String[] fields = Policy.fieldStrings( inFileLine );
 
-        setDate( fields[DATE_FIELD] );
-
+        // Check that we have the number of fields we're expecting, if
+        // we get more, then it's not so bad, we'll just ignore them.
         if ( fields.length >= NUM_OF_FIELDS )
             {
                 setCountry( fields[COUNTRY_FIELD] );
             }
     }
 
+
+    // Alternate Constructor
+    // PURPOSE:    This constructor is used when we're reading in data from
+    //             the user and we've confirmed that it's an active policy
+    //             and that the data is valid to the best of our ability.
+    // IMPORTS:    inDate           - Date of the policy.
+    //             inPolicyCountry  - String of the country name.
+    // EXPORTS:    TravelPolicy instance with the given values set.
+    // REMARKS:    None.
+
+    private TravelPolicy( PolicyDate inDate, String inPolicyCountry )
+    {
+        this.setDate( inDate );
+        this.policyCountry = inPolicyCountry;
+    }
+
     // Setters
     public void setCountry( String country )
     {
-        policyCountry = country;
+        this.policyCountry = country;
     }
 
-    // Returns a string that can be used to display the policy details
-    // out to the user.
-    public String toString()
-    {
-        String result = super.toString();
 
-        // If the policy is active, then give all the details, otherwise
-        // just indicate the policy is not active.
-        if ( isActive() )
-            {
-                result += "\n" +
-                    "Country: " + policyCountry + "\n" +
-                    "Premium: " + calculatePremium();
-            }
 
-        return result;
-    }
+    // NAME:    calculatePremium
+    // PURPOSE: Returns the premium amount in dollars.
+    // IMPORTS: None.
+    // EXPORTS: A double representing the amount of the premium in dollars.
+    // REMARKS: Check comments in Policy class.
 
-    // Returns the calculation of the travel insurance premium, very
-    // simple, just the base premium, then an extra amount is added on
-    // if the country matches any of the high premium countries.
     public double calculatePremium()
     {
         boolean increasedPremium = false;
@@ -100,33 +117,52 @@ public class TravelPolicy extends Policy
         double result = BASE_PREMIUM;
         do
             {
-                if ( HIGHER_PREMIUM_COUNTRIES[countryIndex].equals( policyCountry ) )
+                if ( HIGHER_PREMIUM_COUNTRIES[countryIndex].equals(                                                               this.policyCountry ) )
                     {
                         increasedPremium = true;
                         result += HIGHER_PREMIUM;
                     }
                 countryIndex++;
-            } while ( !increasedPremium && countryIndex < HIGHER_PREMIUM_COUNTRIES.length );
+            } while ( !increasedPremium &&
+                      countryIndex < HIGHER_PREMIUM_COUNTRIES.length );
 
         return result;
     }
 
-    // Returns a string array that represents the order that the policy
-    // fields should be ordered in the text file.
-    // Check the comment in the Policy class.
-    protected String[] policyFields()
-    {
-        String[] resultArray = { dateString(),
-                                 policyCountry };
 
-        return resultArray;
-    }
 
+    // NAME:    promptForInsurance
+
+    // PURPOSE: Prompts the user for the car insurance details, and
+    //          returns a TravelPolicy instance that represents that data.
+    // INPUT:  date, country for policy.
+    // OUTPUT: Prompts for date, country.
+    // IMPORT: None.
+    // EXPORT: TravelPolicy instance with values.
+    // Assertions:
+    //     Post: Either an inactive TravelPolicy (no date set), or an active
+    //           TravelPolicy with all fields set best we can.
+    // REMARKS: It's hard to say if it's really the right place for
+    //          this, as it's mixing Input/Output into a class that could
+    //          be more "pure". However, my argument is that the
+    //          PolicyManager class shouldn't really know the internals
+    //          of the policies too much, and that would include know what
+    //          fields to prompt the user for.
+    //
+    //          However, if you really wanted to get rid of the coupling
+    //          to the ConsoleInput class and the prompts to the user,
+    //          etc, you would come up with a scheme where this class would
+    //          advertise the prompts, etc, basically come up with an
+    //          internal kind of protocol that represented inputs,
+    //          validation, etc, needed.
+    //
+    //          Not very much error checking going on, can't verify much.
     public static TravelPolicy promptForInsurance()
     {
         PolicyDate date = PolicyDate.promptForDate();
         TravelPolicy newPolicy = new TravelPolicy();
 
+        // No point asking for more fields if the policy isn't active.
         if ( !date.isNullDate() )
             {
                 // User entered in a date.
@@ -135,5 +171,72 @@ public class TravelPolicy extends Policy
             }
 
         return newPolicy;
+    }
+
+
+
+
+    // NAME:    toString
+    // PURPOSE: Return a string in human readable format of the policy.
+    // IMPORTS: None.
+    // EXPORTS: A string, human readable, possibly with multiple
+    //          newlines.
+    // REMARKS: Check the toString() comments in Policy class.
+
+    public String toString()
+    {
+        String result = super.toString();
+
+        // If the policy is active, then give all the details, otherwise
+        // just indicate the policy is not active.
+        if ( this.isActive() )
+            {
+                result += "\n" +
+                    "Country: " + this.policyCountry + "\n" +
+                    "Premium: " + this.premiumString();
+            }
+
+        return result;
+    }
+
+    // NAME:    equals
+    // PURPOSE: To compare two CarPolicy instances for equality.
+    // IMPORTS: inCarPolicy - CarPolicy we want to compare to.
+    // EXPORT:  boolean, true if they are equal.
+
+    @Override public boolean equals( Object inObj )
+    {
+        boolean result = true;
+
+        // Handle if we get handed in null, or completely different
+        // classes.
+        if ( !(inObj instanceof TravelPolicy) )
+            {
+                result = false;
+            }
+        else
+            {
+                TravelPolicy testObject = (TravelPolicy) inObj;
+                result = testObject.dateString().equals( this.dateString() ) &&
+                    testObject.policyCountry.equals( this.policyCountry );
+            }
+
+        return result;
+    }
+
+    // NAME:    policyFields
+    // PURPOSE: Return an array of strings that represent the policy
+    //          values for saving to file.
+    // IMPORTS: None.
+    // EXPORTS: A string array of the field values, in order they should
+    //          be in the text file.
+    // REMARKS: Check policyFields() comments in Policy class.
+
+    protected String[] policyFields()
+    {
+        String[] resultArray = { dateString(),
+                                 this.policyCountry };
+
+        return resultArray;
     }
 }

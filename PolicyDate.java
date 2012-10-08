@@ -8,7 +8,7 @@
 // COMMENTS:  Dates should be immutable, the 20th of August 1922 can't
 //            become 16th July 2011.
 // REQUIRES:  None.
-// Last Mod:  6th September 2012
+// Last Mod:  8th October 2012
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -16,8 +16,12 @@ import java.text.ParseException;
 import io.ConsoleInput;
 
 public class PolicyDate {
+    // Constants
+    // Value that represents "No Date", hence no policy.
+    public static final int NULL_DATE = 0;
+
     // Our dateformatter should be the same for all objects.
-    private static SimpleDateFormat dateFormatter =
+    private static final SimpleDateFormat DATE_FORMATTER =
         new SimpleDateFormat( "yyyyMMdd" );
 
     // The date of the policy, this should always be initalised by a
@@ -27,18 +31,29 @@ public class PolicyDate {
     // Assume we have a null date until it gets set.
     private boolean dateIsNull = true;
 
-    // Constants
-    // Value that represents "No Date", hence no policy.
-    public static final int NULL_DATE = 0;
-
     // Default Constructor
+    // PURPOSE: Default creation of date, date will be marked as invalid.
+    // IMPORTS: None.
+    // EXPORT:  An instance of a PolicyDate that is considered inactive.
+    // REMARKS: None.
+
     public PolicyDate()
     {
         // Everything should already be set to the correct values in the
         // field declarations above.
     }
 
-    // Constructors
+
+    // Alternate Constructor
+    // PURPOSE: This constructor is used to parse strings into dates. If
+    //          handed an invalid date string, it will just set the date
+    //          to a null date.
+    // IMPORT:  dateToParse - String of the date, expected format is
+    //                        yyyyMMdd.
+    // EXPORT:  PolicyDate instance with either the date given, or marked as
+    //          invalid.
+    // REMARKS: Any invalid dates are just made into null dates.
+
     public PolicyDate( String dateToParse )
     {
         if ( Integer.parseInt( dateToParse ) == NULL_DATE )
@@ -50,9 +65,9 @@ public class PolicyDate {
             }
         else
             {
-                dateFormatter.setLenient( false );
+                DATE_FORMATTER.setLenient( false );
                 try {
-                    dateOfPolicy = dateFormatter.parse( dateToParse );
+                    dateOfPolicy = DATE_FORMATTER.parse( dateToParse );
                     dateIsNull = false;
                 } catch (ParseException e)
                     {
@@ -63,34 +78,68 @@ public class PolicyDate {
             }
     }
 
-    // Alternative constructor
+
+
+
+    // Alternate Constructor
+    // PURPOSE: This constructor is used to parse an integer into a date. If
+    //          handed an invalid date number, will just return a null date.
+    // IMPORT:  dateFromInt - Integer that represents the date.
+    // EXPORT:  PolicyDate instance with either the date given, or marked as
+    //          invalid.
+    // REMARKS: Any invalid dates are just made into null dates.
+    //          Does no range checking on the integer outside date checking.
+    //          Bit of double handing, as we're converting to string, then to
+    //          integer again.
     public PolicyDate( int dateFromInt )
     {
         // It's a bit weird, we're moving int to string to int.
         this( Integer.toString( dateFromInt ) );
     }
 
+
+
+
     // Copy constructor
+    // PURPOSE: Offer a method that will return a copy of the given date.
+    // IMPORT:  inDate - PolicyDate that we will copy.
+    // EXPORT:  New instance of PolicyDave copied from inDate.
+    // REMARKS: None.
+
     public PolicyDate( PolicyDate inDate )
     {
         dateOfPolicy = (Date) inDate.dateOfPolicy.clone();
         dateIsNull = inDate.dateIsNull;
     }
 
-    // Returns true if the date is a null date, which is a valid value
-    // that represents that there is no date.
+
+
+
+    // NAME: isNullDate
+    // PURPOSE: Will return true is the PolicyDate is either not set, or
+    //          the result of an invalid date.
+    // IMPORT:  None.
+    // EXPORT:  Boolean, true is the date is not valid or is null.
+    // REMARKS: None
+
     public boolean isNullDate()
     {
         return ( dateIsNull );
     }
 
-    public Date getDate()
-    {
-        return dateOfPolicy;
-    }
 
-    // Assessors
-    // Return the policy date as a string in the format YYYYMMDD.
+
+
+    // NAME: toString
+
+    // PURPOSE: Return the date as a string, output format is the same
+    //          as the expected input format.  yyyyDDmm
+
+    // IMPORT: None.
+
+    // EXPORT: String that represents the date.
+    // REMARKS: None.
+
     public String toString()
     {
         // If we have a null date, then be sure to return the null date string instead.
@@ -98,16 +147,31 @@ public class PolicyDate {
         String result = Integer.toString( NULL_DATE );
         if ( !dateIsNull )
             {
-                result = dateFormatter.format( dateOfPolicy );
+                result = DATE_FORMATTER.format( dateOfPolicy );
             }
 
         return result;
     }
 
+
+
+
     // Prompt for date
 
     // Prompt the user for the date, accept only valid dates, or 0.
     // Otherwise keep asking, return a policy date instance.
+
+    // NAME: promptForDate
+
+    // PURPOSE: Prompt the user for a date, keep requesting until we get
+    //          "0", or a valid date.
+    // INPUT:   inDate - Date string from user.
+    // OUTPUT:  Prompts for date entry.
+    // IMPORT:  None.
+    // EXPORT:  PolicyDate instance that is a valid date, or explictly a
+    //          null date from the user.
+    // Assertions
+    //     Post: A valid PolicyDate object, or explictily entered null date.
     public static PolicyDate promptForDate()
     {
         PolicyDate inDate = null;
@@ -115,12 +179,17 @@ public class PolicyDate {
 
         do
             {
-                dateFromUser = ConsoleInput.readInt( "Enter date of policy, YYYYMMDD format. 0 for no policy" );
+                dateFromUser =
+                    ConsoleInput.readInt( "Enter date of policy, " +
+                                          "YYYYMMDD format. 0 for no policy" );
                 inDate = new PolicyDate( Integer.toString( dateFromUser ) );
-            } while ( dateFromUser != 0 && inDate.dateIsNull  );
+            } while ( dateFromUser != NULL_DATE && inDate.dateIsNull  );
 
         return inDate;
     }
+
+
+
 
     // The equals method for comparing two dates,
     @Override public boolean equals( Object inObj )
@@ -136,27 +205,6 @@ public class PolicyDate {
                 PolicyDate testObject = (PolicyDate) inObj;
                 result = testObject.dateOfPolicy.equals( dateOfPolicy ) &&
                     testObject.dateIsNull == dateIsNull;
-            }
-
-        return result;
-    }
-
-    // If you override equals, you also have to override hashCode, it's
-    // part of the general contract with Java objects.
-    //
-    // Good hashing is the realm of maths.
-    @Override public int hashCode()
-    {
-        // Don't need any sophisticated hash function here.
-        int result = 17;
-
-        // We don't care about a loss of precision, we just want a
-        // simple hashing function.
-        result = 31 * result + (int) dateOfPolicy.getTime();
-
-        if ( !dateIsNull )
-            {
-                result = 31 * result + 1;
             }
 
         return result;

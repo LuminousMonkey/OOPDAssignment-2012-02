@@ -25,16 +25,19 @@ public class PolicyFile
     // be updated to APPEND_MODE if the file already exists.
     private String writeMode = WRITE_MODE;
 
+    // Our handle on the TextFile class.
     private TextFile fileOfPolicies = null;
 
-    // Constructor
+    // Default constructor
     //
-    // Our class for handling file access to our policy files, always
-    // needs a filename, will check if the file exists, and set the
-    // result in fileError.
-    //
-    // If a write attempt is tried on a file that doesn't appear to
-    // exist, then it will try to create a file with the filename.
+    // PURPOSE: Takes a file name, and tests if the file exists, if it
+    //          does, then it makes sure we're in append mode.
+    // IMPORT: inFilename - A string that represents the filename of the
+    //         file.
+    // EXPORT: PolicyFile class, set into append mode if the file
+    //         exists, otherwise any write to the file will create it.
+    // REMARKS: There is no need for a "blank" default constructor, file
+    //          operations always need a filename.
     public PolicyFile( String inFilename )
     {
         filename = inFilename;
@@ -46,79 +49,38 @@ public class PolicyFile
             }
     }
 
-    // Tests that a file exists already, returns true if the file is
-    // available for reading (writing may not work), otherwise false.
-    //
-    // This is an explicit test, give a filename, get a result back,
-    // does not keep any instances around.
-    private static boolean testForFile( String filename )
-    {
-        TextFile fileTest = new TextFile( filename, READ_MODE );
 
-        boolean result = false;
-        if ( fileTest.openFile() )
-            {
-                result = true;
-            }
 
-        // TextFile class is nice, and will make sure we can't close a
-        // file we haven't opened already.
-        fileTest.closeFile();
 
-        return result;
-    }
+    // NAME: fileExists
+    // PURPOSE: Returns true if the file this instance represents
+    //          exists.
+    // IMPORT:  None.
+    // EXPORT:  Boolean, true if the file exists, false otherwise.
+    // REMARKS: The file exist test is just based off the write mode, it
+    //          doesn't check to see if the file actually exists each time.
+    //          So if something happens between the time we actually
+    //          checked, and the time that this is called, it won't be
+    //          actually true.
 
-    // creatingFile
-
-    // Returns true if we're creating a new file, otherwise false.
     public boolean fileExists()
     {
         return ( !writeMode.equals( WRITE_MODE ) );
     }
 
-    // Read line
-    //
-    // As TextFile doesn't offer a read line method, so we need our own.
-    // This method will just go from the current file position, and
-    // return a string up to, but not including a newline character. The
-    // newline character will be skipped and the file position should be
-    // starting at the character after the newline (if any).
-    //
-    // It assumes that the file is already opened, it will just return
-    // an empty string if there's nothing left, or end of file, etc.
-    private String readLine()
-    {
-        String result = "";
-        boolean newLineFound = false;
 
-        char currentCharacter = ' ';
 
-        // Loop until we find a newline character, or we hit the end of
-        // the file.
-        while ( !fileOfPolicies.endOfFile() && !newLineFound )
-            {
-                currentCharacter = fileOfPolicies.readChar();
-                if ( currentCharacter == '\n' )
-                    {
-                        // We've found our newline.
-                        newLineFound = true;
-                    }
-                else
-                    {
-                        result += currentCharacter;
-                    }
-            }
 
-        return result;
-    }
+    // NAME: findHolder
+    // PURPOSE: Search the file for the given PolicyHolder and return
+    //          the compete PolicyHolder with details from the file.
+    // IMPORT:  PolicyHolder we are to search for.
+    // EXPORT:  PolicyHolder that was found, including any policy details.
+    // Assertions
+    //     Pre: File is available for reading.
+    // REMARKS: Will give a false positive if the file contains a blank
+    //          PolicyHolder.
 
-    // Given a policy holder, this will search for a policy holder that
-    // equals the policy holder passed in, if there's a match then it
-    // will return the policy holder that was found in the file.
-
-    // This method already assumes that the file has already been tested
-    // if it exists, or can be read, any failure should result in false
-    // being returned.
     public PolicyHolder findHolder( PolicyHolder inHolder )
     {
         // To check if a policy holder exists in a file, we open it, and
@@ -199,7 +161,7 @@ public class PolicyFile
                 // Check that the policy holder we've got isn't already
                 // in the file.
                 fileToWriteTo.printIt( policyHolderEntry( inHolder ) );
-                
+
                 // We do no error checking to keep the assignment simple
                 // assume it saved, and make sure we switch the file to
                 // append mode now.
@@ -209,6 +171,69 @@ public class PolicyFile
         // We don't need to worry about checking if the file was open or
         // not, as that is taken care of in the TextFile class.
         fileToWriteTo.closeFile();
+
+        return result;
+    }
+
+
+
+
+    // NAME:    readLine
+    // PURPOSE: Read a single line from the text file including the
+    //          terminating newline.
+    // INPUT:   Read line from file.
+    // IMPORT:  None.
+    // EXPORT:  A string of the line that was read, does not include the
+    //          terminating newline character.
+    //          String will be empty if there's nothing more to read.
+    // Assertions
+    //     Pre: openFile() method has been called and was successful.
+    // REMARKS: All our read operations are done through this, doesn't
+    //          handle any read errors.
+    private String readLine()
+    {
+        String result = "";
+        boolean newLineFound = false;
+
+        char currentCharacter = ' ';
+
+        // Loop until we find a newline character, or we hit the end of
+        // the file.
+        while ( !fileOfPolicies.endOfFile() && !newLineFound )
+            {
+                currentCharacter = fileOfPolicies.readChar();
+                if ( currentCharacter == '\n' )
+                    {
+                        // We've found our newline.
+                        newLineFound = true;
+                    }
+                else
+                    {
+                        result += currentCharacter;
+                    }
+            }
+
+        return result;
+    }
+
+    // Tests that a file exists already, returns true if the file is
+    // available for reading (writing may not work), otherwise false.
+    //
+    // This is an explicit test, give a filename, get a result back,
+    // does not keep any instances around.
+    private static boolean testForFile( String filename )
+    {
+        TextFile fileTest = new TextFile( filename, READ_MODE );
+
+        boolean result = false;
+        if ( fileTest.openFile() )
+            {
+                result = true;
+            }
+
+        // TextFile class is nice, and will make sure we can't close a
+        // file we haven't opened already.
+        fileTest.closeFile();
 
         return result;
     }

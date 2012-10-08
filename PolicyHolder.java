@@ -10,10 +10,6 @@
 public class PolicyHolder
 {
     // Constants
-    // Seed value for the hashCode function needed by Java.
-    private static final int HASH_SEED = 15;
-    private static final int HASH_MULTIPLIER = 31;
-
     // Our fields for our policy holder is split differenty. The name
     // string is terminated by ",".
     // The phone number will start with "(".
@@ -165,13 +161,13 @@ public class PolicyHolder
     {
         return "Name: " + name + "\n" +
             "Address: " + address + "\n" +
-            "Phone number: " + phoneNumber + "\n" +
+            "Phone number: " + phoneNumber + "\n\n" +
             "Home Policy\n" +
-            homeInsurance + "\n" +
+            homeInsurance + "\n\n" +
             "Car Policy\n" +
-            carInsurance + "\n" +
+            carInsurance + "\n\n" +
             "Travel Policy\n" +
-            travelInsurance + "\n";
+            travelInsurance + "\n\n";
     }
 
     // The equals method, this is one of the base methods that are
@@ -196,22 +192,6 @@ public class PolicyHolder
                 result = comparisionObject.name.equals( name ) &&
                     comparisionObject.address.equals( address );
             }
-
-        return result;
-    }
-
-    // If you override the equals method, then you must also override
-    // the hashCode method.
-    //
-    // Writing a good hash code is hard, need to know maths.
-    @Override public int hashCode()
-    {
-        int result = HASH_SEED;
-
-        // We don't care too much about generating a good hashing code
-        // here.
-        result = HASH_MULTIPLIER * result + name.hashCode();
-        result = HASH_MULTIPLIER * result + address.hashCode();
 
         return result;
     }

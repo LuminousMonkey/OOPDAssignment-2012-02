@@ -15,6 +15,13 @@ public abstract class Policy
     // Our field seperator when we save to, read, from the file.
     private static final String FIELD_DELIMITER = ":";
 
+    // Currency symbol used when displaying premiums.
+    private static final String CURRENCY_SYMBOL = "$";
+
+    // Position of fields in the file.
+    // The date field is always the first.
+    private static final int DATE_FIELD  = 0;
+
     // Variables
     private PolicyDate date = new PolicyDate();
 
@@ -29,6 +36,29 @@ public abstract class Policy
     {
         // By default a blank policy will have be inactive.
         setInactive();
+    }
+
+
+    // Alternate Constructor
+    // PURPOSE: This constructor is used when reading in the policy from
+    //          the file.
+    // IMPORT:  inFileLine - single line string of the policy as defined
+    //          in assignment spec.
+    // EXPORT:  An instance of a the policy, values defined by data read
+    //          from file.
+    // REMARKS: No error checking done.
+
+    protected Policy( String inFileLine )
+    {
+        // Break down the string into substrings based on the field
+        // seperator.
+        String[] fields = Policy.fieldStrings( inFileLine );
+
+        // Fields are all hardcoded.  Date field should always be
+        // present, however if it's the only field, then don't bother
+        // setting any of the other field values, rely on the default
+        // values being set correctly.
+        this.setDate( fields[DATE_FIELD] );
     }
 
 
@@ -223,7 +253,7 @@ public abstract class Policy
 
         if ( isActive() )
         {
-                result = "Date: " + dateString();
+                result = "Date:  \t " + dateString();
         }
 
         return result;
@@ -231,6 +261,19 @@ public abstract class Policy
 
 
 
+
+    // NAME:    premiumString
+
+    // PURPOSE: Returns the premium of the policy formatted as a string.
+
+    // IMPORTS: None.
+
+    // EXPORTS: A string, in dollars with currency sign and decimal places.
+    // REMARKS: None.
+    public String premiumString()
+    {
+        return String.format( CURRENCY_SYMBOL + "%.2f", this.calculatePremium() );
+    }
 
     // NAME: fieldStrings
 
