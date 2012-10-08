@@ -5,14 +5,15 @@
 //            assignment.
 // REFERENCE: None.
 // COMMENTS:  None.
-// REQUIRES:  None.
-// Last Mod:  5th October 2012
+// REQUIRES:  ConsoleInput class.
+// Last Mod:  8th October 2012
 
 import io.ConsoleInput;
 
 class PolicyManager
 {
-    // Our constants for menu choices.
+    // Constants
+    // Menu choices.
     private static final char VIEW_HOLDER_KEY = 'v';
     private static final char ADD_HOLDER_KEY = 'a';
     private static final char QUIT_KEY = 'q';
@@ -21,6 +22,11 @@ class PolicyManager
     // entering a new policy holder, or if they're searching for an
     // existing one.
     private enum AddOrSearch { ADDING_HOLDER, SEARCHING_FOR_HOLDER };
+
+    // NAME:    main
+    // PURPOSE: Where the magic happens.
+    // IMPORT:  String array of args (No used)
+    // EXPORT:  None.
 
     public static void main( String[] args )
     {
@@ -48,10 +54,18 @@ class PolicyManager
         System.exit( 0 );
     }
 
-    // promptForFilename
-    // What is says on the packet, prompts the user for the filename of
-    // the policy file they want to open. Does no error checking, of any
-    // kind.
+
+
+
+    // NAME:    promptForFilename
+    // PURPOSE: Just prompts and gets the filename of the policy file
+    //          we're interested in.
+    // INPUT:   String of the filename.
+    // OUPUT:   Prompt for filename.
+    // IMPORT:  None.
+    // EXPORT:  String of the filename entered by the user.
+    // REMARKS: No error check, because not much can be done.
+
     private static String promptForFilename()
     {
         // Output prompt to user.
@@ -59,12 +73,19 @@ class PolicyManager
             "Please enter the filename of the policy file" );
     }
 
-    // displayMenu
-    //
-    // Outputs the main menu to the user (add, view, quit). Takes a
-    // boolean that indicates if the file the user specified already
-    // exists, just results in the text for the menu options being a
-    // little different.
+
+
+
+    // NAME:    displayMenu
+    // PURPOSE: Outputs the menu of choices to the user. The options
+    //          will change depending on if the file already exists. For
+    //          example, if the file doesn't exist, then the view policy
+    //          holder option is not available.
+    // OUTPUT:  Menu options for user to select.
+    // IMPORT:  fileExists - boolean if the policy file the user gave
+    //          already exists.
+    // REMARKS: None.
+
     private static void displayMenu( boolean fileExists )
     {
         System.out.println( "OOPD Assignment Menu" );
@@ -75,8 +96,17 @@ class PolicyManager
         System.out.println( QUIT_KEY + " - Quit" );
     }
 
-    // Our add new policy holder menu option varies if the policy file
-    // the user specified exists or not.
+
+
+
+    // NAME:    displayAddNewPolicyOption
+    // PURPOSE: Outputs the needed menu option text for adding a new
+    //          policy depending on if the file already exists.
+    // OUTPUT:  Menu option for user to select.
+    // IMPORT:  fileExists - boolean if the policy file the user gave
+    //          already exists.
+    // REMARKS: None.
+
     private static void displayAddNewPolicyOption( boolean fileExists )
     {
         // We just append a string to the menu option to let the user
@@ -87,32 +117,54 @@ class PolicyManager
             {
                 newOrExistingFileMessage = " to existing file.";
             }
+
         System.out.println( ADD_HOLDER_KEY + " - Add a new policy holder" +
                             newOrExistingFileMessage );
     }
 
-    // displayViewPolicyOption
-    //
-    // Outputs the menu line option for viewing a policy holder. If the
-    // file doesn't exists, then it doesn't make sense to have this
-    // option available, so it takes a boolean that indicates if the
-    // file exists, and changes the output accordingly.
+
+
+
+    // NAME:    displayViewPolicyOption
+    // PURPOSE: Outputs the needed menu option text for viewing a
+    //          policy depending on if the file already exists.
+    // OUTPUT:  Menu option for user to select.
+    // IMPORT:  fileExists - boolean if the policy file the user gave
+    //          already exists.
+
+    // REMARKS: Will not show the option if the file doesn't exist,
+    //          doesn't make sense for the user to view a policy if there
+    //          is no file to view it from
+
     private static void displayViewPolicyOption( boolean fileExists )
     {
+        String viewPolicyOptionMessage = "No policy file available " +
+            "for reading.";
+
         // Can't view a policy holder if the file doesn't exist.
         if ( fileExists )
             {
-                System.out.println( VIEW_HOLDER_KEY +
-                                    " - View a policyholder's policies" );
+                viewPolicyOptionMessage = VIEW_HOLDER_KEY +
+                    " - View a policyholder's policies";
             }
-        else
-            {
-                System.out.println( "No policy file available for reading." );
-            }
+
+        System.out.println( viewPolicyOptionMessage );
     }
 
-    // Menu prompt
-    // Keeps looping until it gets a value option.
+
+
+
+    // NAME: menuSelection
+    // PURPOSE: Gets a valid menu selection from the user, which means
+    //          one of the option keys only. Will loop until it gets one.
+    // INPUT:   Single character from user.
+    // OUTPUT:  Prompt for menu selection.
+    // IMPORT:  None.
+    // EXPORT:  Single lowercase character for menu option.
+    // Assertions
+    //     Post: Returns a character that is only one of the option keys.
+    // REMARKS: None.
+
     private static char menuSelection()
     {
         char optionSelected = ' ';
@@ -124,8 +176,6 @@ class PolicyManager
                 optionSelected = Character.toLowerCase(
                                    ConsoleInput.readChar(
                                        "Please select a menu option" ) );
-                // Calling readChar does not get rid of the newline
-                // character the user would have to have pressed.
 
                 // We're not interested in anymore characters after the
                 // first, clear the input.
@@ -138,11 +188,23 @@ class PolicyManager
         return optionSelected;
     }
 
-    // This is what does the actual work in what we do next.  The
-    // character that's passed in is expected to be either 'a' or 'v'
-    // 'q' should be caught before we get to this procedure.
-    // Anything else will pass through like yesterday's sour milk.
-    private static void processMenuOption( char optionSelected, PolicyFile insurances )
+
+
+
+    // NAME:    processMenuOption
+    // PURPOSE: Runs the submodule to do what the user wants, based on
+    //          their choice.
+    // IMPORT:  optionSelected - Single character, which represents a menu
+    //                           option, excluding the quit option.
+    //          ins urances     - PolicyFile to read and write to.
+    // EXPORT:  None.
+    // Assertions
+    //     Pre: The character can not be the quit option, can only be
+    //     either the add or view holder options
+    // REMARKS: The quit option should have been caught before here.
+
+    private static void processMenuOption( char optionSelected,
+                                           PolicyFile insurances )
     {
         switch ( optionSelected )
             {
@@ -158,19 +220,25 @@ class PolicyManager
             }
     }
 
-    // addNewPolicyHolder
 
-    // Goes through the throws of adding a new policy holder.  Prompting
-    // for the policy holder details, getting the insurance details
-    // entered, etc.
 
-    // At the end, we either have a file created, or appended to with
-    // the given details, if the policy holder already existed in the
-    // file, then they won't be added.
+
+    // NAME:    addNewPolicyHolder
+    // PURPOSE: Prompts the user for the policy holder details, and if
+    //          the holder doesn't already exist, prompts for insurance
+    //          details.
+    // INPUT:   Policy holder details, details for each policy.
+    // OUPUT:   Prompts for details from user, writes to policy file.
+    // IMPORT:  insurances - PolicyFile of the policies to read or write
+    //          to.
+    // EXPORT:  None.
+
     private static void addNewPolicyHolder( PolicyFile insurances )
     {
         PolicyHolder holderToAdd = promptForPolicyHolder( AddOrSearch.ADDING_HOLDER );
         PolicyHolder holderFound = insurances.findHolder( holderToAdd );
+
+        String messageToUser = "Policy holder already exists in file.";
 
         if ( holderFound == null )
             {
@@ -182,38 +250,58 @@ class PolicyManager
                 // policy holder to the file.
                 insurances.writeHolder( holderToAdd );
 
-                System.out.println( "Policy holder added to file." );
+                messageToUser = "Policy holder added to file.";
             }
-        else {
-            System.out.println( "Policy holder already exists in file." );
-        }
+
+        System.out.println( messageToUser );
     }
 
-    // The user wants to view a policy, we just need the name and the
-    // address.
+
+
+
+    // NAME:    viewPolicyHolder
+    // PURPOSE: Prompts the user for the policy holder details to search
+    //          for. Only needs the name and address, if found displays the
+    //          details of the policy holder and their policies to the user.
+    // INPUT:   Policy holder details for searching.
+    // OUTPUT:  name, address for the policy holder to search for.
+    // IMPORT:  insurances - PolicyFile of the policies to read or write
+    //          to.
+    // EXPORT:  None.
+
     private static void viewPolicyHolder( PolicyFile insurances )
     {
-        PolicyHolder holderToView = promptForPolicyHolder( AddOrSearch.SEARCHING_FOR_HOLDER );
+        PolicyHolder holderToView =
+            promptForPolicyHolder( AddOrSearch.SEARCHING_FOR_HOLDER );
 
         PolicyHolder holderFound = insurances.findHolder( holderToView );
+
+        String resultToUser = "Sorry, couldn't find that policy holder.";
 
         if ( holderFound != null )
             {
                 // We found them!
                 // Show them to the user.
-                System.out.println( holderFound );
+                resultToUser = holderFound.toString();
             }
-        else
-            {
-                System.out.println( "Sorry, couldn't find that policy holder." );
-            }
+
+        System.out.println( resultToUser );
     }
 
-    // promptForPolicyHolder
 
-    // Prompts for the policy holder details, depending if they're
-    // adding, or searching for a policy holder. Searching for a policy
-    // holder means we don't need to know the phone number.
+
+
+    // NAME:    promptForPolicyHolder
+    // PURPOSE: Prompt the user for policy holder details, however if
+    //          we're searching we only need the name and address, not
+    //          the phone number.
+    // INPUT:   name, address of policy holder.
+    // OUTPUT:  Prompts for details of policy holder.
+    // IMPORT:  addingOrSearching - Enum, if we're adding or searching
+    //          for a policy holder.
+    // EXPORT:  PolicyHolder details.
+    // REMARKS: No error checking.
+
     private static PolicyHolder promptForPolicyHolder( AddOrSearch addingOrSearching )
     {
         String promptHeading = "Adding new policy holder";
@@ -230,7 +318,8 @@ class PolicyManager
 
         PolicyHolder policyHolderFromUser = null;
 
-        // We only ask for the phone number if we're adding a new policy holder, it's not needed for searching policy holders.
+        // We only ask for the phone number if we're adding a new policy
+        // holder, it's not needed for searching policy holders.
         if ( addingOrSearching == AddOrSearch.ADDING_HOLDER )
             {
                 String phoneNumber = ConsoleInput.readLine( "Phone Number" );

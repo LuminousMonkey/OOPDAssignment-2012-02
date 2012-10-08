@@ -17,7 +17,7 @@ public class PolicyHolder
     private static final String nameTerminator = ",";
     private static final String phoneNumberRegEx = "\\(|\\)";
 
-    // Variables
+    // Fields
     private String name = "";
     private String address = "";
     private String phoneNumber = "";
@@ -27,24 +27,49 @@ public class PolicyHolder
     private CarPolicy carInsurance = new CarPolicy();
     private TravelPolicy travelInsurance = new TravelPolicy();
 
-    // Default constructor
+    // Default Constructor
+    // PURPOSE: Default creation of a policy holder.
+    // IMPORTS: None.
+    // EXPORT:  An instance of a policy holder that is blank.
+    // REMARKS: None.
+
     public PolicyHolder()
     {
-
+        // Fields should have all been set in the field initalisation
+        // above.
     }
 
-    // Alternate constructor
+
+
+
+    // Alternative constructor
+    // PURPOSE: Default creation of a policy holder with the given
+    //          details.
+    // IMPORTS: inName, inAddress, inPhoneNumber - details of the policy
+    //          holder.
+    // EXPORT:  An instance of a policy holder that has the given fields
+    //          set.
+    // REMARKS: None.
+
     public PolicyHolder( String inName, String inAddress,
                          String inPhoneNumber )
     {
-        name = inName;
-        address = inAddress;
-        phoneNumber = inPhoneNumber;
+        this.name = inName;
+        this.address = inAddress;
+        this.phoneNumber = inPhoneNumber;
     }
 
+
+
+
     // Alternative constructor
-    //
-    // Used mainly for searching.
+    // PURPOSE: Creating of a policy holder that is intended to be used
+    //          for searching.
+    // IMPORTS: inName, inAddress - details of the policy holder.
+    // EXPORT:  An instance of a policy holder that has the given fields
+    //          set.
+    // REMARKS: None.
+
     public PolicyHolder( String inName, String inAddress )
     {
         name = inName;
@@ -52,9 +77,19 @@ public class PolicyHolder
         phoneNumber = "";
     }
 
-    // Alternate constructor If we've given a single string, then we
-    // expect it to be the same as the output string of our toString method.
-    public PolicyHolder( String inHolder )
+
+
+
+    // Alternative constructor
+    // PURPOSE: Creating a policy holder based on the single line we get
+    //          from the file.
+    // IMPORTS: inFileLine - Single string that represents from policy
+    //          holder from the file.
+    // EXPORT:  An instance of a policy holder that has the given fields
+    //          set.
+    // REMARKS: None.
+
+    public PolicyHolder( String inFileLine )
     {
         // We have our PolicyHolder string, the first "," represents the
         // name of the Policy Holder, with the rest of the string (which
@@ -62,7 +97,7 @@ public class PolicyHolder
         // holder's name) being the address and phone number.
 
         // We then parse the remainer of text as address, and find the phone number.
-        String nameAndRemainer[] = inHolder.split( nameTerminator, 2);
+        String nameAndRemainer[] = inFileLine.split( nameTerminator, 2);
 
         if ( nameAndRemainer.length > 1 )
             {
@@ -72,49 +107,15 @@ public class PolicyHolder
 
                 if ( addressAndPhoneNumber.length > 1 )
                     {
-                        name = nameAndRemainer[0];
-                        address = addressAndPhoneNumber[0];
-                        phoneNumber = addressAndPhoneNumber[1];
+                        this.name = nameAndRemainer[0];
+                        this.address = addressAndPhoneNumber[0];
+                        this.phoneNumber = addressAndPhoneNumber[1];
                     }
             }
     }
 
-    // Accessors
-    public String getName()
-    {
-        return name;
-    }
 
-    public String getAddress()
-    {
-        return address;
-    }
 
-    public String getPhoneNumber()
-    {
-        return phoneNumber;
-    }
-
-    public HomePolicy getHomeInsurance()
-    {
-        return homeInsurance;
-    }
-
-    public CarPolicy getCarInsurance()
-    {
-        return carInsurance;
-    }
-
-    public TravelPolicy getTravelInsurance()
-    {
-        return travelInsurance;
-    }
-
-    // setPolicy
-    public void setPolicy( HomePolicy inHomePolicy )
-    {
-        homeInsurance = new HomePolicy( inHomePolicy );
-    }
 
     // The following setters will take a string of the related policy
     // and update the policy holder's insurance details to match.
@@ -133,7 +134,17 @@ public class PolicyHolder
         travelInsurance = new TravelPolicy( inTravelPolicy );
     }
 
-    // Collect the insurance details for each policy
+
+
+
+    // NAME:    promptForInsurances
+    // PURPOSE: Prompt the user to enter in details for each type of
+    //          insurance.
+    // INPUTS:  Details for each type of insurance policy.
+    // OUTPUTS: Prompts for details for each type of insurance policy.
+    // IMPORTS: None.
+    // EXPORTS: None.
+
     public void promptForInsurances()
     {
         System.out.println( "Home Insurance" );
@@ -146,10 +157,18 @@ public class PolicyHolder
         travelInsurance = TravelPolicy.promptForInsurance();
     }
 
-    // fileString
 
-    // Returns a string that represents the format that the policy
-    // should be saved to in the file.
+
+
+    // NAME:    fileString
+    // PURPOSE: Return a string that represents the policy holder
+    //          details to save to the file.
+    // IMPORTS: None.
+    // EXPORTS: Single string that is not newline terminated that
+    //          represents the whole policy holder, including insurance
+    //          policies in the format expected for saving to the file.
+    // REMARKS: None.
+
     public String fileString()
     {
         return name + "," + address + "(" + phoneNumber + ")" + "\n" +
@@ -158,8 +177,17 @@ public class PolicyHolder
             travelInsurance.fileString();
     }
 
-    // Returns the policy as a string, will have the field names, etc,
-    // possibly with newlines.
+
+
+
+    // NAME:    toString
+    // PURPOSE: Returns a string that is in human readable format,
+    //          showing all the details of the policy holder, along with
+    //          their policies.
+    // IMPORTS: None.
+    // EXPORTS: String of policy holder in human readable format.
+    // REMARKS: I am a fish, I am a fish, I am a fish, I am a fish.
+
     public String toString()
     {
         return "Name: " + name + "\n" +
@@ -173,9 +201,14 @@ public class PolicyHolder
             travelInsurance + "\n\n";
     }
 
-    // The equals method, this is one of the base methods that are
-    // inherited from the Java "Object" itself, and has to follow
-    // certain rules.
+
+
+
+    // NAME:    equals
+    // PURPOSE: To compare two HomePolicy instances for equality.
+    // IMPORTS: inHomePolicy - HomePolicy we want to compare to.
+    // EXPORT:  boolean, true if they are equal.
+
     @Override public boolean equals( Object inObj )
     {
         boolean result = true;

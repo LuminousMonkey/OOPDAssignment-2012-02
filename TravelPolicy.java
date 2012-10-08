@@ -117,7 +117,8 @@ public class TravelPolicy extends Policy
         double result = BASE_PREMIUM;
         do
             {
-                if ( HIGHER_PREMIUM_COUNTRIES[countryIndex].equals(                                                               this.policyCountry ) )
+                if ( HIGHER_PREMIUM_COUNTRIES[countryIndex].equals(
+                        this.policyCountry ) )
                     {
                         increasedPremium = true;
                         result += HIGHER_PREMIUM;

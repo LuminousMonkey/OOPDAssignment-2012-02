@@ -5,7 +5,7 @@
 //            and will do premium calculation based on postcode.
 // REFERENCE: None.
 // COMMENTS:  None.
-// REQUIRES:  None.
+// REQUIRES:  ConsoleInput class.
 // Last Mod:  8th October 2012
 
 import io.ConsoleInput;
