@@ -159,7 +159,7 @@ public class PolicyDate {
 
 
 
-    // NAME: promptForDate
+    // NAME:    promptForDate
     // PURPOSE: Prompt the user for a date, keep requesting until we get
     //          "0", or a valid date.
     // INPUT:   inDate - Date string from user.
