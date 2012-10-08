@@ -1,0 +1,51 @@
+\documentclass[a4paper]{book}
+
+\usepackage{directcomms}
+\usepackage{listings}
+
+\title{ Curtin University \\ OOPD Assignment \\ October 2012 }
+
+\author{ Mike Aldred \\ 09831542@curtin.edu.au }
+
+\begin{document}
+
+\makeatletter
+\renewcommand{\maketitle}{
+  \begin{titlepage}
+    \begin{center}
+      \includegraphics[width=10cm]{../../../../Common/Logos/company_logo.eps}\\[1cm]
+      \HRule \\[0.4cm]
+             { \huge \bfseries \@title}\\[0.4cm]
+             \HRule \\[1.5cm]
+
+             \begin{minipage}{0.4\textwidth}
+               \begin{flushleft} \large
+                 \emph{Author:}\\
+                 \@author
+               \end{flushleft}
+             \end{minipage}
+
+             \vfill
+
+             {\large \today}
+    \end{center}
+  \end{titlepage}
+}
+\makeatother
+
+\pagestyle{empty}
+\pagenumbering{roman}
+
+\maketitle
+\input{../../../../Common/company_details.tex}
+\frontmatter
+\tableofcontents
+\mainmatter
+\pagenumbering{arabic}
+\pagestyle{fancy}
+
+\chapter{Introduction}
+
+\lstinputlisting[language=Java]{PolicyManager.java}
+
+\end{document}
