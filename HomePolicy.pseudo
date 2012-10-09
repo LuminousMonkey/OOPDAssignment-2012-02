@@ -78,4 +78,8 @@ IF inHomePolicy not ISA HomePolicy
   result = false
 ELSE
   result = ( inHomePolicy.date.equals<-date ) AND
-    ( inHomePolicy.postCode.equals<-
+    ( inHomePolicy.postCode = postCode ) AND
+    ( inHomePolicy.numberOfStories = numberOfStories )
+
+Protected Accessor policyFields IMPORT None EXPORT resultArray
+  resultArray = Array of dateString, postCode, numberOfStories
