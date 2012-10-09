@@ -7,7 +7,7 @@
 // COMMENTS:  None.
 // REQUIRES:  java.util.Calendar for getting the current year.
 //            ConsoleInput class.
-// Last Mod:  8th October 2012
+// Last Mod:  9th October 2012
 
 import java.util.Calendar;
 import io.ConsoleInput;
