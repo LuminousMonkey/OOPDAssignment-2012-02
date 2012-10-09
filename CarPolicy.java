@@ -26,11 +26,6 @@ public class CarPolicy extends Policy
     // Never make this value -1.0
     private static final double AGING_FACTOR = 0.2;
 
-    // Fields
-    private String carMake = "";
-    private String carModel = "";
-    private int manufactureYear = INVALID_YEAR;
-
     // Position of the fields in the policy file.
     private static final int MAKE_FIELD = 1;
     private static final int MODEL_FIELD = 2;
@@ -38,6 +33,12 @@ public class CarPolicy extends Policy
 
     // This should be updated if the number of fields above change.
     private static final int NUM_OF_FIELDS = YEAR_FIELD + 1;
+
+    // Fields
+    private String carMake = "";
+    private String carModel = "";
+    private int manufactureYear = INVALID_YEAR;
+
 
 
 
@@ -135,7 +136,6 @@ public class CarPolicy extends Policy
 
 
     // NAME:    promptForInsurance
-
     // PURPOSE: Prompts the user for the car insurance details, and
     //          returns a CarPolicy instance that represents that data.
     // INPUT:  date, make, model, year for policy.

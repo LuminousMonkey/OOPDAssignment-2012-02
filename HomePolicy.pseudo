@@ -1,0 +1,81 @@
+CLASS HomePolicy
+Class Fields: postCode, numberOfStories
+Class Constants:
+  BASE_PREMIUM = 500
+  HIGHER_PREMIUM = 200
+  HIGHER_PREMIUM_POSTCODES = 6011, 6056, 6061, 6112
+  INVALID_POSTCODE = -1
+  INVALID_NUMBER_OF_STORIES = -1
+  POSTCODE_FIELD = 1
+  STORIES_FIELD = 2
+  NUM_OF_FIELDS = STORIES_FIELD + 1
+
+Default constructor IMPORT None
+super
+
+Copy constructor IMPORT inHomePolicy (HomePolicy)
+  setDate<-inHomePolicy.date
+  setPostCode<-inHomePolicy.postCode
+  setNumberOfStories<-inHomePolicy.numberOfStories
+
+Alternate constructor IMPORT inFileLine
+super<-inFileLine
+CALL fieldString<-inFileLine
+IF fieldString has fields >= NUM_OF_FIELDS
+  setPostCode<-Get POSTCODE_FIELD from fields
+  setNumberOfStories<-Get STORIES_FIELD from fields
+ENDIF
+
+Private Alternate constructor
+IMPORT inDate (PolicyDate), inPostCode, inStories
+setDate<-inDate
+postCode = inPostCode
+numberOfStories = inStories
+
+Accessor calculatePremium IMPORT None EXPORT premium
+increasedPremium = false
+postCodeIndex = 0
+result = BASE_PREMIUM
+DO
+  IF postCode is equal to HIGHER_PREMIUM_POSTCODES[postCodeIndex]
+    increasedPremium = false
+    result = result + HIGHER_PREMIUM
+  ENDIF
+WHILE ( Not increasedPremium AND postCodeIndex <
+           length of HIGHER_PREMIUM_POSTCODES )
+
+Mutator setPostCode IMPORT newPostCode
+postCode = newPostCode
+
+Mutator setNumberOfStories IMPORT newNumberOfStories
+numberOfStories = newNumberOfStories
+
+Accessor getPostCode IMPORT None EXPORT postCode
+
+Accessor getNumberOfStories IMPORT None EXPORT numberOfStories
+
+Imperative promptForInsurance
+IMPORT None
+EXPORT newPolicy (HomePolicy)
+CALL PolicyDate.promptForDate->date
+newPolicy = HomePolicy
+
+IF date is valid
+  INPUT postCode
+  INPUT numberOfStories
+ENDIF
+
+Accessor toString IMPORT None EXPORT resultString
+resultString = super.toString
+
+IF isActive
+resultString = postCode numberOfStories and premiumString
+
+Accessor equals IMPORT inHomePolicy (HomePolicy)
+result = true
+
+IF inHomePolicy not ISA HomePolicy
+  result = false
+ELSE
+  result = ( inHomePolicy.date.equals<-date ) AND
+    ( inHomePolicy.postCode.equals<-

@@ -1,0 +1,67 @@
+CLASS CarPolicy
+Class Fields: carMark, carModel, manufactureYear
+Class Constants:
+  INVALID_YEAR = -1
+  BASE_PREMIUM = 1500
+  AGING_FACTOR = 0.2
+  MAKE_FIELD = 1
+  MODEL_FIELD = 2
+  YEAR_FIELD = 3
+  NUM_OF_FIELDS = YEAR_FIELD + 1
+
+Default constructor IMPORT None
+super
+
+Alternate constructor IMPORT inFileLine
+super<-inFileLine
+CALL fieldString<-inFileLine
+IF fieldString has fields >= NUM_OF_FIELDS
+  carMake = Get MAKE_FIELD from fields
+  carModel = Get MODEL_FIELD from fields
+  manufactureYear = Get YEAR_FIELD from fields
+ENDIF
+
+Private Alternate constructor
+IMPORT inDate (PolicyDate), inMake, inModel, inYear
+setDate<-inDate
+carMake = inMake
+carModel = inModel
+manufactureYear = inYear
+
+Accessor calculatePremium IMPORT None EXPORT premium
+  carAge = current year - manufactureYear
+  premium = BASE_PREMIUM / 1.0 + AGING_FACTOR * carAge
+
+Imperative promptForInsurance
+IMPORT None
+EXPORT newPolicy (CarPolicy)
+CALL PolicyDate.promptForDate->date
+newPolicy = CarPolicy
+
+IF date is valid
+  INPUT make
+  INPUT model
+  INPUT year
+ENDIF
+
+CarPolicy<-make, model, year ->newPolicy
+
+Accessor toString IMPORT None EXPORT resultString
+resultString = super.toString
+
+IF isActive
+  resultString = make model year and premiumString
+ENDIF
+
+Accessor equals IMPORT inCarPolicy (CarPolicy)
+result = true
+
+IF inCarPolicy not ISA CarPolicy
+  result = false
+ELSE
+  result = ( inCarPolicy.date.equals<-date ) AND
+    ( inCarPolicy.carMake.equals<-carMake ) AND
+    ( inCarPolicy.manufactureYear.equals<-manufactureYear )
+
+Protected Accessor policyFields IMPORT None EXPORT resultArray
+  resultArray = Array of dateString, carMake, carModel, manufactureYear

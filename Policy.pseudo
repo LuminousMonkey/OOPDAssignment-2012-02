@@ -50,7 +50,7 @@ IMPORT fieldLine
 EXPORT fieldsAsStrings
 fieldsAsStrings = fieldLine split by FIELD_DELIMITER
 
-Private SUBMODULE interpostFields
+Private SUBMODULE interposeFields
 IMPORT fieldsAsStrings
 EXPORT fileLine
 FOR EACH field in fieldsAsStrings
