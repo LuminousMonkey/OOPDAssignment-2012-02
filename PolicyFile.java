@@ -25,7 +25,7 @@ public class PolicyFile
     // be updated to APPEND_MODE if the file already exists.
     private String writeMode = WRITE_MODE;
 
-     // Default constructor
+    // Default constructor
     //
     // PURPOSE: Takes a file name, and tests if the file exists, if it
     //          does, then it makes sure we're in append mode.
@@ -204,7 +204,7 @@ public class PolicyFile
     //     Pre: openFile() method has been called and was successful.
     // REMARKS: All our read operations are done through this, doesn't
     //          handle any read errors.
-    private String readLine( TextFile fileOfPolicies )
+    private static String readLine( TextFile fileOfPolicies )
     {
         String result = "";
         boolean newLineFound = false;

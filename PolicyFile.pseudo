@@ -1,0 +1,70 @@
+CLASS PolicyFile
+Class Fields: filename, writeMode
+Class Constants:
+  READ_MODE = "r"
+  WRITE_MODE = "w"
+  APPEND_MODE = "a"
+
+Default constructor IMPORT inFileName
+filename = inFileName
+
+IF testForFile<-inFileName
+  writeMode = APPEND_MODE
+END
+
+Accessor fileExists IMPORT None EXPORT fileIsThere
+fileIsThere = Not writeMode.equals<- WRITE_MODE
+
+Accessor findHolder
+IMPORT inHolder (PolicyHolder)
+EXPORT foundHolder (PolicyHolder)
+fileOfPolicies = TextFile<-filename, READ_MODE
+matchFound = false
+IF fileOfPolicies.openFile
+  WHILE Not fileOfPolicies.endOfFile AND Not matchFound
+    currentFilePolicyHolder = PolicyHolder<-readLine<-fileOfPolicies
+    matchFound = inHolder.equals<-currentFilePolicyHolder
+  ENDWHILE
+ENDIF
+
+IF matchFound
+  currentFilePolicyHolder.setHomePolicy<-readLine<-fileOfPolicies
+  currentFilePolicyHolder.setCarPolicy<-readLine<-fileOfPolicies
+  currentFilePolicyHolder.setTravelPolicy<-readLine<-fileOfPolicies
+ELSE
+  Make currentFilePolicyHolder not valid
+ENDIF
+
+fileOfPolicies.closeFile
+
+Imperative writeHolder IMPORT inHolder
+fileToWriteTo = TextFile<-filename, writeMode
+IF fileToWriteTo.openFile
+  fileToWriteTo.printIt<-inHolder.fileString
+  writeMode = APPEND_MODE
+ENDIF
+fileToWriteTo.closeFile
+
+Accessor toString IMPORT None EXPORT resultString
+resultString = filename and filexists
+
+Private SUBMODULE readLine IMPORT fileOfPolicies (TextFile) EXPORT result
+newLineFound = false
+WHILE Not fileOfPolicies.endOfFile AND Not newLineFound
+  currentCharacter = fileOfPolicies.readChar
+  IF currentCharacter is newline
+    newLineFound = true
+  ELSE
+    result = result + currentCharacter
+  ENDIF
+ENDWHILE
+
+Private SUBMODULE testForFile IMPORT filename EXPORT result
+fileToTest = TextFile<-filename, READ_MODE
+result = false;
+
+IF fileToTest.openFile
+  result = true
+ENDIF
+
+fileToTest.closeFile

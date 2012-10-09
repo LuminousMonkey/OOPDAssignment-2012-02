@@ -1,0 +1,103 @@
+MAIN
+  policyFilename = CALL promptForFilename
+  insurances = PolicyFile<-policyfilename
+
+  CALL displayMenu<-insurances.fileExists
+
+  CALL menuSelection->menuSelected
+
+  WHILE menuSelection is not quit option
+    CALL processMenuOption<-menuSelected, insurances
+    CALL displayMenu<-insurances.fileExists
+    CALL menuSelection->menuSelected
+  ENDWHILE
+ENDMAIN
+
+SUBMODULE promptForFilename
+IMPORT NONE
+EXPORT filename
+INPUT filename
+
+SUBMODULE displayMenu
+IMPORT fileExists
+CALL displayAddNewPolicyOption<-fileExists
+CALL displayViewPolicyOption<-fileExists
+OUTPUT Quit option
+
+SUBMODULE displayAddNewPolicyOption
+IMPORT fileExists
+newOrExistingFileMessage = create file append message
+IF fileExists
+  newOrExistingFileMessage = append file append message
+ENDIF
+
+OUTPUT Add holder option with newOrExistingFileMessage appended
+
+SUBMODULE displayAddViewPolicyOption
+IMPORT fileExists
+viewPolicyOptionMessage = No policy file available
+IF fileExists
+  viewPolicyOptionMessage = View policy option text
+ENDIF
+
+OUTPUT viewPolicyOptionMessage
+
+SUBMODULE menuSelection
+DO
+  INPUT optionSelected
+WHILE optionSelected is not view, add, or quit key
+
+SUBMODULE processMenuOption
+IMPORT optionSelected, insurances (PolicyFile)
+SELECT optionSelected
+  CASE: add holder key
+    CALL addNewPolicyHolder<-insurances
+  CASE: view holder key
+    CALL viewPolicyHolder<-insurances
+ENDSELECT
+
+SUBMODULE addNewPolicyHolder
+IMPORT insurances (PolicyFile)
+CALL promptForPolicyHolder<-ADDING->holderToAdd
+CALL insurances.findHolder<-holderToAdd->holderFound
+
+messageToUser = Policy holder already exists
+
+IF holderFound
+  CALL holderToAdd.promptForInsurances
+  CALL insurances.writeHolder<-holderToAdd
+
+  messageToUser = Policy holder added to file
+ENDIF
+
+OUTPUT messageToUser
+
+SUBMODULE viewPolicyHolder
+IMPORT insurances (PolicyFile)
+CALL promptForPolicyHolder<-SEARCHING->holderToView
+CALL insurances.findHolder<-holderToView->holderFound
+resultToUser = Couldn't find that policy holder
+IF holderFound
+  CALL holderFound.toString->resultToUser
+ENDIF
+OUTPUT resultToUser
+
+SUBMODULE promptForPolicyHolder
+IMPORT addingOrSearching
+EXPORT policyHolderFromUser
+promptHeading = Adding new policy holder
+IF addingOrSearching is SEARCHING
+  promptHeading = Searching for policy holder
+ENDIF
+
+OUTPUT promptHeading
+
+INPUT name
+INPUT address
+
+IF addingOrSearching is ADDING
+  INPUT phoneNumber
+  PolicyHolder<-name, address, phoneNumber->policyHolderFromUser
+ELSE
+  PolicyHolder<-name, address->policyHolderFromUser
+END

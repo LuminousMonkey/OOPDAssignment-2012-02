@@ -38,9 +38,10 @@ postCodeIndex = 0
 result = BASE_PREMIUM
 DO
   IF postCode is equal to HIGHER_PREMIUM_POSTCODES[postCodeIndex]
-    increasedPremium = false
+    increasedPremium = true
     result = result + HIGHER_PREMIUM
-  ENDIF
+    ENDIF
+    postCodeIndex = postCodeIndex + 1
 WHILE ( Not increasedPremium AND postCodeIndex <
            length of HIGHER_PREMIUM_POSTCODES )
 
@@ -63,6 +64,7 @@ newPolicy = HomePolicy
 IF date is valid
   INPUT postCode
   INPUT numberOfStories
+  HomePolicy<-postCode, numberOfStories->newPolicy
 ENDIF
 
 Accessor toString IMPORT None EXPORT resultString

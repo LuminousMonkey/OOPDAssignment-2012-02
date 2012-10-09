@@ -1,0 +1,62 @@
+CLASS PolicyHolder
+Class Fields: name, address, phoneNumber,
+              homeInsurance (HomePolicy)
+              carInsurance (CarPolicy)
+              travelInsurance (TravelPolicy)
+
+Default constructor IMPORT None
+
+Alternate constructor IMPORT inName, inAddress, inPhoneNumber
+EXPORT None
+name = inName
+address = inAddress
+phoneNumber = inPhoneNumber
+
+Alternate constructor IMPORT inName, inAddress EXPORT None
+name = inName
+address = inAddress
+phoneNumber = ""
+
+Alternate constructor IMPORT inFileLine
+nameAndRestOfString = Split inFileLine at terminator characters
+IF more than one field in nameAndRestOfString
+  addressAndPhoneNumber = Split the rest of the string in nameAndRestOfString
+  IF addressAndPhoneNumber has more than one field
+    name = first field in nameAndRestOfString
+    address = first field in addressAndPhoneNumber
+    phoneNumber = next field in addressAndPhoneNumber
+  ENDIF
+ENDIF
+
+Mutator setHomePolicy IMPORT inHomePolicy
+homeInsurance = HomePolicy<- inHomePolicy
+
+Mutator setCarPolicy IMPORT inCarPolicy
+carInsurance = CarPolicy<- inCarPolicy
+
+Mutator setTravelPolicy IMPORT inTravelPolicy
+travelInsurance = TravelPolicy<- inTravelPolicy
+
+Imperatve promptForInsurances
+IMPORT None
+EXPORT None
+homeInsurance = HomePolicy.promptForInsurance
+carInsurance = CarPolicy.promptForInsurance
+travelInsurance = TravelPolicy.promptForInsurance
+
+Accessor fileString IMPORT None EXPORT resultString
+resultString = name address phoneNumber homeInsurance.fileString
+    carInsurance.fileString travelInsurance.fileString
+
+Accessor toString IMPORT None EXPORT resultString
+resultString = name address phonenumber homeInsurance.toString
+    carInsurance.toString travelInsurance.toString
+
+Accessor equals IMPORT inPolicyHolder (PolicyHolder)
+result = true
+
+IF inPolicyHolder not ISA PolicyHolder
+  result = false
+ELSE
+  result = inPolicyHolder.name.equals<-name AND
+    inPolicyHolder.address.equals<-address

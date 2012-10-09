@@ -1,0 +1,69 @@
+CLASS TravelPolicy
+Class Fields: policyCountry
+Class Constants:
+  BASE_PREMIUM = 100
+  HIGHER_PREMIUM = 150
+  HIGHER_PREMIUM_COUNTRIES = United States, Russia
+  COUNTRY_FIELD = 1
+  NUM_OF_FIELDS = COUNTRY_FIELD + 1
+
+Default constructor IMPORT None
+super
+
+Alternate constructor IMPORT None
+super<-inFileLine
+CALL fieldString<-inFileLine
+IF fieldString has fields >= NUL_OF_FIELDS
+  CALL setCountry<- Get COUNTRY_FIELD from fields
+ENDIF
+
+Private Alternate constructor
+IMPORT inDate (PolicyDate), inPolicyCountry
+setDate<-inDate
+policyCountry = inPolicyCountry
+
+Mutator setCountry IMPORT country EXPORT None
+policyCountry = country
+
+Accessor calculatePremium IMPORT None EXPORT premium
+increasedPremium = false
+countryIndex = 0
+result = BASE_PREMIUM
+DO
+  IF policyCountry is equal to HIGHER_PREMIUM_COUNTRIES[countryIndex]
+    increasedPremium = true
+    result = result + HIGHER_PREMIUM
+    ENDIF
+    countryIndex = countryIndex + 1
+WHILE ( Not increasedPremium AND countryIndex <
+           length of HIGHER_PREMIUM_COUNTRIES )
+
+Imperative promptForInsurance
+IMPORT None
+EXPORT newPolicy (TravelPolicy)
+CALL PolicyDate.promptForDate->date
+newPolicy = TravelPolicy
+
+IF date is valid
+  INPUT country
+  TravelPolicy<-country->newPolicy
+ENDIF
+
+Accessor toString IMPORT None EXPORT resultString
+resultString = super.toString
+
+IF isActive
+  resultString = policyCountry and premiumString
+ENDIF
+
+Accessor equals IMPORT inTravelPolicy (TravelPolicy)
+result = true
+
+IF inTravelPolicy not ISA TravelPolicy
+  result = false
+ELSE
+  result = ( inTravelPolicy.date.equals<-date ) AND
+     inTravelPolicy.policyCountry.equals<- policyCountry
+
+Protected Accessor policyFields IMPORT None EXPORT resultArray
+  resultArray = Array of dateString, policyCountry

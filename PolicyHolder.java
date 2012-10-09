@@ -14,8 +14,8 @@ public class PolicyHolder
     // string is terminated by ",".
     // The phone number will start with "(".
     // These are regular expressions!
-    private static final String nameTerminator = ",";
-    private static final String phoneNumberRegEx = "\\(|\\)";
+    private static final String NAME_TERMINATOR = ",";
+    private static final String PHONE_NUMBER_REGEX = "\\(|\\)";
 
     // Fields
     private String name = "";
@@ -97,13 +97,14 @@ public class PolicyHolder
         // holder's name) being the address and phone number.
 
         // We then parse the remainer of text as address, and find the phone number.
-        String nameAndRemainer[] = inFileLine.split( nameTerminator, 2);
+        String nameAndRemainer[] = inFileLine.split( NAME_TERMINATOR, 2);
 
         if ( nameAndRemainer.length > 1 )
             {
                 // First in the array will be our name, the second in the array
                 // will be the address and phone number, so get the phone number,
-                String addressAndPhoneNumber[] = nameAndRemainer[1].split( phoneNumberRegEx );
+                String addressAndPhoneNumber[] =
+                    nameAndRemainer[1].split( PHONE_NUMBER_REGEX );
 
                 if ( addressAndPhoneNumber.length > 1 )
                     {
